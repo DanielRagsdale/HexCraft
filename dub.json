@@ -1,0 +1,14 @@
+{
+	"name": "hex-craft",
+	"description": "Hex based crafting and mining sandbox",
+	"authors": ["Daniel Ragsdale"],
+	"homepage": "http://DanielRagsdale.com",
+	"license": "GPL-2.0",
+	"dependencies": {
+		"derelict-gl3": "~>1.0.18",
+		"derelict-sdl2": "~>2.0.0",
+		"imageformats": "~>6.1.0",
+
+		"gl3n": "~>1.3.1"
+	}
+}
