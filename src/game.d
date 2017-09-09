@@ -140,6 +140,13 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 			Update();
 			accumulator -= dt;
         }
+        
+		//GLVM Render Extraction
+		auto dataArr = ExtractRenderObjects();
+
+		sort(cast(RenderData[])dataArr);
+		
+        rMessage.SetData([[short(1)]], cast(immutable)dataArr);
     }
 }
 
@@ -150,15 +157,6 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 */
 void ExtractionThread(Tid parentTid, shared(RenderMessage) rMessage)
 {
-	while(!InputStates.shouldQuit)
-	{
-        //GLVM Render Extraction
-		auto dataArr = ExtractRenderObjects();
-
-		sort(cast(RenderData[])dataArr);
-
-        rMessage.SetData([[short(1)]], cast(immutable)dataArr);
-	}
 }
 
 /**
@@ -209,9 +207,6 @@ class RenderMessage
 		}
 		
 		//Render Map
-		//writeln("From RenderMessage: ", hexes);
-
-
 		DrawRegion(cast(ushort[16][16][16]*)&hexes, 0, 0, 0);
 
 		renderer.Render();
