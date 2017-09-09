@@ -33,6 +33,7 @@ import componentPlayerCamera3P;
 shared RenderMessage rMessage;
 
 Tid LogicThreadTid;
+Tid ExtractionThreadTid;
 
 /**
 * Prepares the game to be started.
@@ -45,6 +46,7 @@ void Start()
     rMessage = new shared RenderMessage();
 
     LogicThreadTid = spawn(&LogicThread, thisTid(), rMessage);
+    ExtractionThreadTid = spawn(&ExtractionThread, thisTid(), rMessage);
 
 	RenderInputLoop(rMessage);
 }
@@ -97,9 +99,7 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 		------------------------
 	*/
 
-    RegisterGameObject(new GameObject(Transform(vec3(0, 0, 0.75f)),
-            new ComponentPlayerController(),
-            new ComponentPlayerCamera()));
+    RegisterGameObject(new GameObject(Transform(vec3(0, 0, 0.75f)), new ComponentPlayerController(), new ComponentPlayerCamera()));
 
 	foreach (x; 0 .. 16)
 	{
@@ -114,9 +114,6 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 	}
 	}
 	}
-
-    //RegisterGameObject(new GameObject(Transform(vec3(5, 0, 0.75f)), new ComponentTestRenderer(3, 1)));
-
 
 	/*
 		End First Scene Init Script:
@@ -143,13 +140,6 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 			Update();
 			accumulator -= dt;
         }
-
-        //GLVM Render Extraction
-		auto dataArr = ExtractRenderObjects();
-
-		sort(cast(RenderData[])dataArr);
-
-        rMessage.SetData([[short(1)]], cast(immutable)dataArr);
     }
 }
 
@@ -158,13 +148,18 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 *
 * Runs on Thread 2
 */
-void extractionThread(Tid parentTid, shared(RenderMessage) rMessage)
+void ExtractionThread(Tid parentTid, shared(RenderMessage) rMessage)
 {
+	while(!InputStates.shouldQuit)
+	{
+        //GLVM Render Extraction
+		auto dataArr = ExtractRenderObjects();
 
+		sort(cast(RenderData[])dataArr);
+
+        rMessage.SetData([[short(1)]], cast(immutable)dataArr);
+	}
 }
-
-
-
 
 /**
 * Data extractions from the LogicalGameState
@@ -175,7 +170,7 @@ immutable (immutable RenderData)[] ExtractRenderObjects()
 
 	RenderData[] rd;
 
-	foreach(ulong i, Component renderableComp; componentGroups[IterableComponentTypes.RENDERABLE])
+	foreach(ulong i, shared Component renderableComp; componentGroups[IterableComponentTypes.RENDERABLE])
 	{
 		rd ~= (cast(IRenderable)renderableComp).Render();
 	}

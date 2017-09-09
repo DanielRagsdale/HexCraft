@@ -1,4 +1,5 @@
 import std.stdio;
+import core.atomic;
 
 import gameObject;
 import component;
@@ -15,24 +16,25 @@ enum IterableComponentTypes
 /**
 * Array of all of the GameObjects that exist within the scene
 */
-public GameObject[] gameObjects;
+public shared GameObject[] gameObjects;
 
 /**
 * Multidimensional array mapping IterableComponentTypes to an array of Components that belong within that group
 */
-public Component[ulong][IterableComponentTypes] componentGroups;
+public shared Component[ulong][IterableComponentTypes] componentGroups;
 
-private uint gameObjectIDCounter = 0;
+private shared uint gameObjectIDCounter = 0;
 
 /**
 * Add a game object that does not have its render function called.
 */
 public ulong RegisterGameObject(GameObject gameObject)
 {
-	gameObjectIDCounter++;
+	atomicOp!"+="(gameObjectIDCounter, 1);
+
 	gameObject.Register(gameObjectIDCounter);
 
-	gameObjects ~= gameObject;
+	gameObjects ~= cast(shared GameObject) gameObject;
 
 	return gameObjectIDCounter;
 }
@@ -42,7 +44,7 @@ public ulong RegisterGameObject(GameObject gameObject)
 */
 public void AddComponentToIterable(Component comp, IterableComponentTypes type)
 {
-	componentGroups[type][comp.GetID] = comp;
+	componentGroups[type][comp.GetID] = cast(shared Component) comp;
 }
 
 /**
@@ -50,8 +52,8 @@ public void AddComponentToIterable(Component comp, IterableComponentTypes type)
 */
 public void Update()
 {
-	foreach(GameObject go; gameObjects)
+	foreach(shared GameObject go; gameObjects)
 	{
-		go.Update();
+		(cast(GameObject)go).Update();
 	}
 }

@@ -1,3 +1,7 @@
 hex-craft
+
+*.o
 *.swp
 *.swo
+
+.dub
