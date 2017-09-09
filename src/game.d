@@ -82,12 +82,7 @@ void RenderInputLoop(shared(RenderMessage) rMessage)
 	}
 }
 
-
-int[4][4][4] hexes = [
-	[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1]],
-	[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [1, 0, 0, 1]],
-	[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [1, 0, 0, 1]],
-	[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1]]];
+shared ushort[16][16][16] hexes; 
 
 /**
 * Handles everything that is not input or rendering related.
@@ -105,6 +100,20 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
     RegisterGameObject(new GameObject(Transform(vec3(0, 0, 0.75f)),
             new ComponentPlayerController(),
             new ComponentPlayerCamera()));
+
+	foreach (x; 0 .. 16)
+	{
+	foreach (y; 0 .. 16)
+	{
+	foreach (z; 0 .. 16)
+	{
+		if(x*y*z < 256)
+		{
+			hexes[x][y][z] = cast(ushort) (x*y + z) % 9;
+		}
+	}
+	}
+	}
 
     //RegisterGameObject(new GameObject(Transform(vec3(5, 0, 0.75f)), new ComponentTestRenderer(3, 1)));
 
@@ -143,6 +152,19 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
         rMessage.SetData([[short(1)]], cast(immutable)dataArr);
     }
 }
+
+/**
+* Prepares various items in the game world for rendering
+*
+* Runs on Thread 2
+*/
+void extractionThread(Tid parentTid, shared(RenderMessage) rMessage)
+{
+
+}
+
+
+
 
 /**
 * Data extractions from the LogicalGameState
@@ -192,19 +214,10 @@ class RenderMessage
 		}
 		
 		//Render Map
-		foreach (x; 0 .. 4)
-		{
-		foreach (y; 0 .. 4)
-		{
-		foreach (z; 0 .. 4)
-		{
-			if(hexes[x][y][z])
-			{
-				renderHexData.DrawFunctions[0](x,y,z);
-			}
-		}
-		}
-		}
+		//writeln("From RenderMessage: ", hexes);
+
+
+		DrawRegion(cast(ushort[16][16][16]*)&hexes, 0, 0, 0);
 
 		renderer.Render();
 	}

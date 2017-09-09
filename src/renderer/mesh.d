@@ -61,5 +61,6 @@ class Mesh
 	~this()
 	{
 	    glDeleteBuffers(NUM_BUFFERS, &m_vertexArrayBuffers[0]);
-	    glDeleteVertexArrays(1, &m_vertexArrayObject); }
+	    glDeleteVertexArrays(1, &m_vertexArrayObject); 
+	}
 }
