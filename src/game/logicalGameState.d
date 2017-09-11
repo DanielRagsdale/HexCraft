@@ -2,13 +2,12 @@ import std.stdio;
 import core.atomic;
 
 import gameObject;
-import component;
 
 /**
 * Stores the information about the game state.
 * Information is then extracted and sent to the rendering thread
 */
-enum IterableComponentTypes
+enum IterableObjectTypes
 {
 	RENDERABLE, COLLIDABLE, END
 }
@@ -19,9 +18,9 @@ enum IterableComponentTypes
 public shared GameObject[] gameObjects;
 
 /**
-* Multidimensional array mapping IterableComponentTypes to an array of Components that belong within that group
+* Multidimensional array mapping IterableObjectTypes to an array of GameObject that belong within that group
 */
-public shared Component[ulong][IterableComponentTypes] componentGroups;
+public shared GameObject[ulong][IterableObjectTypes] objectGroups;
 
 private shared uint gameObjectIDCounter = 0;
 
@@ -40,11 +39,11 @@ public ulong RegisterGameObject(GameObject gameObject)
 }
 
 /**
-* Adds a component to a given group of IterableComponentTypes
+* Adds a GameObject to a given group of IterableObjectTypes
 */
-public void AddComponentToIterable(Component comp, IterableComponentTypes type)
+public void AddObjectToIterable(GameObject go, IterableObjectTypes type)
 {
-	componentGroups[type][comp.GetID] = cast(shared Component) comp;
+	objectGroups[type][go.GetID] = cast(shared GameObject) go;
 }
 
 /**

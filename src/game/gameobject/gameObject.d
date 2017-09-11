@@ -8,9 +8,9 @@ import component;
 import IRenderable;
 
 /**
-* Class representing a GameObject which exists in the scene. Implements component functionality.
+* Class representing a GameObject which exists in the scene
 */
-class GameObject
+abstract class GameObject
 {
     /**
     * The unique ID of this GameObject
@@ -23,36 +23,11 @@ class GameObject
     public Transform transform;
 
     /**
-    * Array of the components this object houses
-    */
-    public Component[] components;
-
-    protected this(float x, float y, float z)
-    {
-        transform.x = x;
-        transform.y = y;
-        transform.z = z;
-    }
-
-    /**
     * Create a GameObject with given transform and components
     */
-    public this(Transform trans, Component[] comps ...)
+    public this(Transform trans)
     {
         transform = trans;
-
-        this(comps);
-    }
-
-    /**
-    * Create a GameObject with given components
-    */
-    public this(Component[] comps ...)
-    {
-        foreach(Component c; comps)
-        {
-            components ~= c;
-        }
     }
 
     /**
@@ -61,25 +36,11 @@ class GameObject
     public void Register(uint ID)
     {
         this.ID = ID;
-
-        for(int i = 0; i < components.length; i++)
-        {
-            components[i].init(this, i);
-        }
     }
 
-    /**
-    * Called once per game tick
-    */
-    public void Update()
-    {
-        foreach(Component c; components)
-        {
-            c.Update();
-        }
-    }
-
-    /**
+	public abstract void Update();
+    
+	/**
     * Returns the transform mat4 associated with this GameObject.
     */
     public mat4 GetTransformMatrix()

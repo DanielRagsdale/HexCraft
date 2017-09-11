@@ -27,7 +27,7 @@ mat4 cameraMatrix;
 public void CreateDisplay(int width, int height, const(char)* title)
 {
     disp = new Display(width, height, title);
-
+	
     shaders[0] = new ShaderTest();
     shaders[1] = new ShaderColor();
 

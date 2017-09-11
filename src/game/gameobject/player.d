@@ -1,30 +1,30 @@
-module componentPlayerController;
+module player;
 
-import std.stdio;
-import std.math;
-import std.algorithm;
-
-import component;
-import util.input;
 import gl3n.linalg;
+
+import util.input;
+
+import logicalGameState;
+
+import IRenderable;
+import renderObjectData;
+import util.mathM;
 
 import gameObject;
 
-import util.mathM;
-
-class ComponentPlayerController : Component
+class Player : GameObject, IRenderable
 {
 	quat originalRot;
 	float rotationX = 0.0f;
 	float rotationY = 0.0f;
 
+    public this(Transform trans)
+	{
+		super(trans);
 
-    public override void init(GameObject go, uint localID)
-    {
-        super.init(go, localID);
-
-		originalRot = go.transform.rotation;
-    }
+        AddObjectToIterable(this, IterableObjectTypes.RENDERABLE);
+		originalRot = transform.rotation;
+	}
 
 	//TODO move sensitivity nonlocal
 	float sensitivity = 0.5f;
@@ -40,25 +40,25 @@ class ComponentPlayerController : Component
 		
         if(InputStates.keyW)
         {
-			movement = gameObject.transform.rotation * vec3(0.0, 0.0, -0.1);
+			movement = transform.rotation * vec3(0.0, 0.0, -0.1);
 			movement.y = 0;
 			transform.position += movement;
         }
         if(InputStates.keyS)
         {
-			movement = gameObject.transform.rotation * vec3(0.0, 0.0, 0.1);
+			movement = transform.rotation * vec3(0.0, 0.0, 0.1);
 			movement.y = 0;
 			transform.position += movement;
         }
         if(InputStates.keyA)
         {
-			movement = gameObject.transform.rotation * vec3(-0.1, 0.0, 0.0);
+			movement = transform.rotation * vec3(-0.1, 0.0, 0.0);
 			movement.y = 0;
 			transform.position += movement;
         }
 		if(InputStates.keyD)
         {
-			movement = gameObject.transform.rotation * vec3(0.1, 0.0, 0.0);
+			movement = transform.rotation * vec3(0.1, 0.0, 0.0);
 			movement.y = 0;
 			transform.position += movement;
         }
@@ -92,4 +92,28 @@ class ComponentPlayerController : Component
 		
 		return clamp (angle, min, max);
 	}
-}
+
+	mat4 cameraMatrix = mat4.identity();
+
+	public override RenderData Render()
+	{
+		//real nYaw = yaw(transform.rotation);
+		
+		//dirVec.y = cos(pitch(transform.rotation)) * sin(nYaw);
+		//dirVec.x = sin(nYaw);
+		//dirVec.z = cos(nYaw);
+		//dirVec.y = sin(pitch(transform.rotation));
+
+		vec3 dirVec = vec3(0,0,-1) * transform.rotation;
+		//writeln(dirVec);
+
+		cameraMatrix = mat4.look_at(transform.position + vec3(0, 1, 0), 
+				transform.position + vec3(0, 1, 0) + dirVec, vec3(0, 1, 0));
+
+		byte[] serialized = *cast(byte[mat4.sizeof]*)(&cameraMatrix);
+
+		return RenderData(0, serialized);
+	}
+}	
+
+

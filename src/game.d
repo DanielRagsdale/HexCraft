@@ -23,12 +23,10 @@ import logicalGameState;
 import renderObjectData;
 import renderHexData;
 import gameObject;
-import component;
 
-import componentPlayerController;
-import componentTestRenderer;
-import componentPlayerCamera;
-import componentPlayerCamera3P;
+import player;
+
+import values;
 
 shared RenderMessage rMessage;
 
@@ -59,7 +57,6 @@ void Start()
 void RenderInputLoop(shared(RenderMessage) rMessage)
 {
 	double t = 0.0;
-    const double dt =  1.0f / 60.0f;
 
     double time0 = CurrentTime();
     double accumulator = 0.0;
@@ -73,10 +70,10 @@ void RenderInputLoop(shared(RenderMessage) rMessage)
         accumulator += frameTime;
 
         //Constant framerate game logic and physics ticks.
-        while(accumulator >= dt)
+        while(accumulator >= INPUT_DT)
         {
         	PollSDLEvents();
-			accumulator -= dt;
+			accumulator -= INPUT_DT;
         }
 		rMessage.Render();
 
@@ -99,7 +96,7 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 		------------------------
 	*/
 
-    RegisterGameObject(new GameObject(Transform(vec3(0, 0, 0.75f)), new ComponentPlayerController(), new ComponentPlayerCamera()));
+    RegisterGameObject(new Player(Transform(vec3(0.0, 0.0, 0.0))));
 
 	foreach (x; 0 .. 16)
 	{
@@ -121,7 +118,6 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 	*/
 
 	double t = 0.0;
-    const double dt =  1.0f / 60.0f;
 
     double time0 = CurrentTime();
     double accumulator = 0.0;
@@ -135,10 +131,10 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
         accumulator += frameTime;
 
         //Constant framerate game logic and physics ticks.
-        while(accumulator >= dt)
+        while(accumulator >= PHYSICS_DT)
         {
 			Update();
-			accumulator -= dt;
+			accumulator -= PHYSICS_DT;
         }
         
 		//GLVM Render Extraction
@@ -168,9 +164,9 @@ immutable (immutable RenderData)[] ExtractRenderObjects()
 
 	RenderData[] rd;
 
-	foreach(ulong i, shared Component renderableComp; componentGroups[IterableComponentTypes.RENDERABLE])
+	foreach(ulong i, shared GameObject renderableObj; objectGroups[IterableObjectTypes.RENDERABLE])
 	{
-		rd ~= (cast(IRenderable)renderableComp).Render();
+		rd ~= (cast(IRenderable)renderableObj).Render();
 	}
 
 	return cast(immutable) rd;

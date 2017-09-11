@@ -10,5 +10,5 @@ in vec4 vertPos;
 
 void main()
 {
-    outColor = texture2D(sampler, texCoord1);
+    outColor = texture(sampler, texCoord1);
 }
