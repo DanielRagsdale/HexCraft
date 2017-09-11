@@ -6,9 +6,6 @@ import display;
 import shader;
 import mesh;
 
-import shaderBlock;
-import shaderColor;
-
 import gl3n.linalg;
 
 public Display disp;
@@ -28,8 +25,8 @@ public void CreateDisplay(int width, int height, const(char)* title)
 {
     disp = new Display(width, height, title);
 
-    shaders[0] = new ShaderBlock();
-    shaders[1] = new ShaderColor();
+    shaders[0] = new Shader("./src/res/shader/block", 0x00);
+    shaders[1] = new Shader("./src/res/shader/test", 0x00);
     
 	SetShaderProgram(0);
 
