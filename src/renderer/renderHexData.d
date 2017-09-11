@@ -54,19 +54,19 @@ GLfloat[] hexVertices = [
 ];
 
 GLfloat[] hexTexCoords = [
-	0.0f, 0.0f,
-	0.0f, 0.0f,
-	0.0f, 0.0f,
-	0.0f, 0.0f,
-	0.0f, 0.0f,
-	0.0f, 0.0f,
+	0.000000f, 0.0f,
+	0.015625f, 0.0f,
+	0.031250f, 0.0f,
+	0.046875f, 0.0f,
+	0.062500f, 0.0f,
+	0.078125f, 0.0f,
 
-	1.0f, 1.0f,
-	1.0f, 1.0f,
-	1.0f, 1.0f,
-	1.0f, 1.0f,
-	1.0f, 1.0f,
-	1.0f, 1.0f,
+	0.000000f, 0.03125f,
+	0.015625f, 0.03125f,
+	0.031250f, 0.03125f,
+	0.046875f, 0.03125f,
+	0.062500f, 0.03125f,
+	0.078125f, 0.03125f,
 ];
 
 GLint[] hexIndices = [
@@ -117,6 +117,7 @@ GLfloat[4][8] palette = [
 * Draw a solid color hex.
 */
 Mesh m;
+Texture hexTex;
 
 void DrawColorHex(ushort col, int x, int y, int z)
 {
@@ -124,8 +125,13 @@ void DrawColorHex(ushort col, int x, int y, int z)
 	{
 		m = new Mesh(hexVertices.ptr, hexTexCoords.ptr, cast(int)hexVertices.length / 3 , hexIndices.ptr, cast(int)hexIndices.length);
 	}
-	
-	GLfloat[4] color = [x % 2, (z % 4) / 4.0f, y / 16.0f, 0.0f];
+	if(hexTex is null)
+	{
+ 		hexTex = new Texture("./src/res/bitmap/hexes.png");
+	}
+	hexTex.Bind();
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
 
 	DrawSimpleHex(m, mat4.identity().translate(dx * x + dy * y + dz * z), palette[col].ptr);
 }
@@ -134,9 +140,10 @@ void DrawColorHex(ushort col, int x, int y, int z)
 * Draw the given mesh
 * Transformed with given transformMatrix
 */
+ulong counter;
 void DrawSimpleHex(Mesh mesh, mat4 transformMatrix, GLfloat* color)
 {
-    GLint shLoc = SetShaderProgram(1);
+    GLint shLoc = SetShaderProgram(0);
 
     GLint transformUniformLocation = glGetUniformLocation(shLoc, "transform");
     GLint cameraUniformLocation = glGetUniformLocation(shLoc, "camera");

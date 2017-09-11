@@ -6,7 +6,7 @@ import display;
 import shader;
 import mesh;
 
-import shaderTest;
+import shaderBlock;
 import shaderColor;
 
 import gl3n.linalg;
@@ -27,23 +27,19 @@ mat4 cameraMatrix;
 public void CreateDisplay(int width, int height, const(char)* title)
 {
     disp = new Display(width, height, title);
-	
-    shaders[0] = new ShaderTest();
-    shaders[1] = new ShaderColor();
 
-    SetShaderProgram(0);
+    shaders[0] = new ShaderBlock();
+    shaders[1] = new ShaderColor();
+    
+	SetShaderProgram(0);
 
     glFrontFace(GL_CCW);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-
-
-    glLineWidth(2.0);
 }
 
 public void Render ()
-{
-    //disp.Update();
+{ //disp.Update();
 
     disp.SwapBuffers();
 }
@@ -57,7 +53,6 @@ public GLint SetShaderProgram(uint sID)
     if(sID != shaderID)
     {
         shaderID = sID;
-
         return shaders[shaderID].Bind();
     }
 

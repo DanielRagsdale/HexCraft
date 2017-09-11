@@ -10,9 +10,8 @@ out vec2 texCoord1;
 
 void main()
 {
-    vec4 tempPos = vec4(position, 1.0) * transform * camera ;
-
-    gl_Position = tempPos;
+    gl_Position = vec4(position, 1.0) * transform * camera;
 
     texCoord1 = texCoord;
+    //texCoord1 = vec2(0.5, 0.1);
 }

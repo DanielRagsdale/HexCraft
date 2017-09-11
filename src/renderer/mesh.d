@@ -10,7 +10,7 @@ class Mesh
             TEXCOORD_VB,
             INDEX_VB,
 
-            NUM_BUFFERS = 3
+            NUM_BUFFERS 
         };
 
         GLuint m_vertexArrayObject;
@@ -45,8 +45,8 @@ class Mesh
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexArrayBuffers[INDEX_VB]);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, int.sizeof * numIndices, indices, GL_STATIC_DRAW);
 
-	
 	    glBindVertexArray(0);
+
     }
 
 	public void Draw()

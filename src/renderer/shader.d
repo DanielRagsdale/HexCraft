@@ -31,6 +31,9 @@ class Shader
 			glAttachShader(m_program, s);
 		}
 	
+		glBindAttribLocation(m_program, 0, "position");
+		glBindAttribLocation(m_program, 1, "texCoord");
+
 		glLinkProgram(m_program);
 		CheckShaderError(m_program, GL_LINK_STATUS, true, "Error linking shader program");
 	
@@ -48,7 +51,7 @@ class Shader
 	{
 		return m_program;
 	}
-	
+
 	GLuint CreateShader(const string text, uint type)
 	{
 	    GLuint shader = glCreateShader(type);
