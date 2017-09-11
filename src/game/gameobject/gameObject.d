@@ -2,9 +2,7 @@ import renderObjectData;
 import gl3n.linalg;
 import std.stdio;
 import core.vararg;
-//import core.vararg;
 
-import component;
 import IRenderable;
 
 /**
@@ -148,17 +146,52 @@ struct Transform
     {
         mixin("return scale." ~ coord[coord.length - 1] ~ ";");
     }
-
-
-    void opOpAssign(string op)(Transform r) if((op == "+") || (op == "-")) {
-        mixin("x" ~ op ~ "= r.x;");
-        mixin("y" ~ op ~ "= r.y;");
-        mixin("z" ~ op ~ "= r.z;");
+	
+	/**
+	  * Binary Operations
+	 **/
+    public Transform opBinary(string op)(double r) if((op == "*") || (op == "/")) {
+		Transform t;
+        mixin("t.position = position" ~ op ~ "r;");
+        mixin("t.rotation = rotation" ~ op ~ "r;");
+		t.scale = scale;
+		return t;
     }
 
-    void opOpAssign(string op)(vec3 r) if((op == "+") || (op == "-")) {
-        mixin("x" ~ op ~ "= r.x;");
-        mixin("y" ~ op ~ "= r.y;");
-        mixin("z" ~ op ~ "= r.z;");
+    public Transform opBinary(string op)(Transform r) if((op == "+") || (op == "-")) {
+		Transform t;
+        mixin("t.position = position" ~ op ~ "r.position;");
+        mixin("t.rotation = rotation" ~ op ~ "r.rotation;");
+		t.scale = scale;
+		return t;
+    }
+
+    public Transform opBinary(string op)(vec3 r) if((op == "+") || (op == "-")) {
+		Transform t;
+        mixin("t.position = position" ~ op ~ "r;");
+		t.rotation = rotation;
+		t.scale = scale;
+		return t;
+	}
+
+	/**
+	  * Assignment Operations
+	 **/
+
+    public Transform opOpAssign(string op)(double r) if((op == "*") || (op == "/")) {
+        mixin("position" ~ op ~ "r;");
+        mixin("rotation" ~ op ~ "r;");
+		return this;
+    }
+
+    public Transform opOpAssign(string op)(Transform r) if((op == "+") || (op == "-")) {
+        mixin("position" ~ op ~ "= r.position;");
+        mixin("rotation" ~ op ~ "= r.rotation;");
+		return this;
+    }
+
+    public Transform opOpAssign(string op)(vec3 r) if((op == "+") || (op == "-")) {
+        mixin("position" ~ op ~ "= r;");
+		return this;
     }
 }

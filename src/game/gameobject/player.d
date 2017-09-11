@@ -1,5 +1,7 @@
 module player;
 
+import std.stdio;
+
 import gl3n.linalg;
 
 import util.input;
@@ -11,6 +13,8 @@ import renderObjectData;
 import util.mathM;
 
 import gameObject;
+
+import values;
 
 class Player : GameObject, IRenderable
 {
@@ -29,38 +33,37 @@ class Player : GameObject, IRenderable
 	//TODO move sensitivity nonlocal
 	float sensitivity = 0.5f;
 
+	Transform lastTrans;
+
     public override void Update()
     {
-		//dirVec.x = dirVec.x * cos(-InputStates.mouseXRel * sensitivity) - dirVec.y * sin(-InputStates.mouseXRel * sensitivity);
-		//dirVec.y = dirVec.x * sin(-InputStates.mouseXRel * sensitivity) + dirVec.y * cos(-InputStates.mouseXRel * sensitivity);
-
-		//dirVec.z += sin(-InputStates.mouseYRel * sensitivity);
+		lastTrans = transform;
 
         vec3 movement;
 		
         if(InputStates.keyW)
         {
-			movement = transform.rotation * vec3(0.0, 0.0, -0.1);
+			movement = transform.rotation * vec3(0.0, 0.0, -1);
 			movement.y = 0;
-			transform.position += movement;
+			transform.position += movement.normalized() * SPEED;
         }
         if(InputStates.keyS)
         {
-			movement = transform.rotation * vec3(0.0, 0.0, 0.1);
+			movement = transform.rotation * vec3(0.0, 0.0, 1);
 			movement.y = 0;
-			transform.position += movement;
+			transform.position += movement.normalized() * SPEED;
         }
         if(InputStates.keyA)
         {
-			movement = transform.rotation * vec3(-0.1, 0.0, 0.0);
+			movement = transform.rotation * vec3(-1, 0.0, 0.0);
 			movement.y = 0;
-			transform.position += movement;
+			transform.position += movement.normalized() * SPEED;
         }
 		if(InputStates.keyD)
         {
-			movement = transform.rotation * vec3(0.1, 0.0, 0.0);
+			movement = transform.rotation * vec3(1, 0.0, 0.0);
 			movement.y = 0;
-			transform.position += movement;
+			transform.position += movement.normalized() * SPEED;
         }
 	
 
@@ -95,23 +98,17 @@ class Player : GameObject, IRenderable
 
 	mat4 cameraMatrix = mat4.identity();
 
-	public override RenderData Render()
+	public override RenderData Render(double tickOffset)
 	{
-		//real nYaw = yaw(transform.rotation);
+		Transform interpTrans = transform;
+		interpTrans += (transform - lastTrans) * (tickOffset / PHYSICS_DT);
 		
-		//dirVec.y = cos(pitch(transform.rotation)) * sin(nYaw);
-		//dirVec.x = sin(nYaw);
-		//dirVec.z = cos(nYaw);
-		//dirVec.y = sin(pitch(transform.rotation));
+		vec3 dirVec = vec3(0,0,-1) * interpTrans.rotation;
 
-		vec3 dirVec = vec3(0,0,-1) * transform.rotation;
-		//writeln(dirVec);
 
-		cameraMatrix = mat4.look_at(transform.position + vec3(0, 1, 0), 
-				transform.position + vec3(0, 1, 0) + dirVec, vec3(0, 1, 0));
+		cameraMatrix = mat4.look_at(interpTrans.position + vec3(0, 1, 0), interpTrans.position + vec3(0, 1, 0) + dirVec, vec3(0, 1, 0));
 
 		byte[] serialized = *cast(byte[mat4.sizeof]*)(&cameraMatrix);
-
 		return RenderData(0, serialized);
 	}
 }	

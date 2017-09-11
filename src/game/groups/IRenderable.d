@@ -11,5 +11,5 @@ interface IRenderable
 	* This method is called by an separate thread, so Render() 
 	* must be valid to call at any moment
     */
-	public RenderData Render();
+	public RenderData Render(double tickOffset);
 }

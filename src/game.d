@@ -31,7 +31,7 @@ import values;
 shared RenderMessage rMessage;
 
 Tid LogicThreadTid;
-Tid ExtractionThreadTid;
+Tid PhysicsThreadTid;
 
 /**
 * Prepares the game to be started.
@@ -44,7 +44,7 @@ void Start()
     rMessage = new shared RenderMessage();
 
     LogicThreadTid = spawn(&LogicThread, thisTid(), rMessage);
-    ExtractionThreadTid = spawn(&ExtractionThread, thisTid(), rMessage);
+    PhysicsThreadTid = spawn(&PhysicsThread, thisTid(), rMessage);
 
 	RenderInputLoop(rMessage);
 }
@@ -122,6 +122,8 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
     double time0 = CurrentTime();
     double accumulator = 0.0;
 
+	double lastFrameTime;
+
     while(!InputStates.shouldQuit)
     {
         double time1 = CurrentTime();
@@ -135,10 +137,11 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
         {
 			Update();
 			accumulator -= PHYSICS_DT;
+			lastFrameTime = CurrentTime();
         }
         
 		//GLVM Render Extraction
-		auto dataArr = ExtractRenderObjects();
+		auto dataArr = ExtractRenderObjects(CurrentTime() - lastFrameTime);
 
 		sort(cast(RenderData[])dataArr);
 		
@@ -151,14 +154,14 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 *
 * Runs on Thread 2
 */
-void ExtractionThread(Tid parentTid, shared(RenderMessage) rMessage)
+void PhysicsThread(Tid parentTid, shared(RenderMessage) rMessage)
 {
 }
 
 /**
 * Data extractions from the LogicalGameState
 */
-immutable (immutable RenderData)[] ExtractRenderObjects()
+immutable (immutable RenderData)[] ExtractRenderObjects(double tickOffset)
 {
 	//RenderData a = RenderData(0, [0x3F]);
 
@@ -166,7 +169,7 @@ immutable (immutable RenderData)[] ExtractRenderObjects()
 
 	foreach(ulong i, shared GameObject renderableObj; objectGroups[IterableObjectTypes.RENDERABLE])
 	{
-		rd ~= (cast(IRenderable)renderableObj).Render();
+		rd ~= (cast(IRenderable)renderableObj).Render(tickOffset);
 	}
 
 	return cast(immutable) rd;
