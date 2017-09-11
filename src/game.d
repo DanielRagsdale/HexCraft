@@ -1,5 +1,5 @@
 /**
-* The Game of Aurora is launched by app.d and then handles the main
+* The Start function is launched by app.d and then handles the main
 * game loop.
 */
 
@@ -12,6 +12,7 @@ import util.time;
 import util.input;
 
 import core.time;
+import core.thread;
 
 import gl3n.linalg;
 
@@ -26,12 +27,17 @@ import gameObject;
 
 import player;
 
+import map;
+import mapModel;
+import generator;
+
 import values;
 
 shared RenderMessage rMessage;
 
 Tid LogicThreadTid;
 Tid PhysicsThreadTid;
+Tid ExtractionThreadTid;
 
 /**
 * Prepares the game to be started.
@@ -45,6 +51,7 @@ void Start()
 
     LogicThreadTid = spawn(&LogicThread, thisTid(), rMessage);
     PhysicsThreadTid = spawn(&PhysicsThread, thisTid(), rMessage);
+    ExtractionThreadTid = spawn(&ExtractionThread, thisTid());
 
 	RenderInputLoop(rMessage);
 }
@@ -81,7 +88,7 @@ void RenderInputLoop(shared(RenderMessage) rMessage)
 	}
 }
 
-shared ushort[16][16][16] hexes; 
+shared Map worldMap; 
 
 /**
 * Handles everything that is not input or rendering related.
@@ -97,20 +104,10 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 	*/
 
     RegisterGameObject(new Player(Transform(vec3(0.0, 0.0, 0.0))));
+	
+	worldMap = new shared(Map)();
+	GenerateMap(worldMap);
 
-	foreach (x; 0 .. 16)
-	{
-	foreach (y; 0 .. 16)
-	{
-	foreach (z; 0 .. 16)
-	{
-		if(x*y*z < 256)
-		{
-			hexes[x][y][z] = cast(ushort) (x*y + z) % 9;
-		}
-	}
-	}
-	}
 
 	/*
 		End First Scene Init Script:
@@ -146,16 +143,40 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 		sort(cast(RenderData[])dataArr);
 		
         rMessage.SetData([[short(1)]], cast(immutable)dataArr);
+
+		Thread.sleep( dur!("msecs")(1));  
     }
 }
 
 /**
-* Prepares various items in the game world for rendering
+* Handles various physics interactions in the world
 *
 * Runs on Thread 2
 */
 void PhysicsThread(Tid parentTid, shared(RenderMessage) rMessage)
 {
+}
+
+shared MapModel worldMapModel; 
+
+/**
+* Prepares various items in the game world for rendering
+*
+* Runs on Thread 3
+*/
+void ExtractionThread(Tid parentTid)
+{
+    while(worldMap is null && !InputStates.shouldQuit)
+	{
+		Thread.sleep( dur!("msecs")(1));  
+	}
+	worldMapModel = new shared(MapModel)(worldMap);	
+
+    while(!InputStates.shouldQuit)
+	{
+		worldMapModel.RefreshChunks();
+		Thread.sleep( dur!("msecs")(5));  
+	}
 }
 
 /**
@@ -206,7 +227,7 @@ class RenderMessage
 		}
 		
 		//Render Map
-		DrawRegion(cast(ushort[16][16][16]*)&hexes, 0, 0, 0);
+		DrawRegion(cast(ushort[16][16][16]*)worldMap.hexes, 0, 0, 0);
 
 		renderer.Render();
 	}
