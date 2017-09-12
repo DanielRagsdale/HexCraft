@@ -5,12 +5,17 @@ alias coordinate = Tuple!(int, int, int);
 
 class Map
 {
-	coordinate[] outdatedChunks;
+	ushort[16][16][16] hexes; 
 
-	shared ushort[16][16][16] hexes; 
-
-	shared this()
+	auto outdatedChunks = SList!coordinate();
+	
+	this()
 	{
-		outdatedChunks ~= coordinate(0, 0, 0);
+		outdatedChunks.insert(coordinate(0, 0, 0));
+	}
+
+	ushort[16][16][16] getChunk(coordinate c)
+	{
+		return hexes;
 	}
 }

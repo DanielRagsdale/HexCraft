@@ -37,7 +37,6 @@ shared RenderMessage rMessage;
 
 Tid LogicThreadTid;
 Tid PhysicsThreadTid;
-Tid ExtractionThreadTid;
 
 /**
 * Prepares the game to be started.
@@ -51,7 +50,6 @@ void Start()
 
     LogicThreadTid = spawn(&LogicThread, thisTid(), rMessage);
     PhysicsThreadTid = spawn(&PhysicsThread, thisTid(), rMessage);
-    ExtractionThreadTid = spawn(&ExtractionThread, thisTid());
 
 	RenderInputLoop(rMessage);
 }
@@ -82,13 +80,17 @@ void RenderInputLoop(shared(RenderMessage) rMessage)
         	PollSDLEvents();
 			accumulator -= INPUT_DT;
         }
-		rMessage.Render();
-
-		//writefln("FPS: %s", 1 / frameTime);
+		
+		if(rMessage.Ready())
+		{
+			rMessage.Render();
+		}
 	}
 }
 
-shared Map worldMap; 
+Map worldMap; 
+
+MapModel worldMapModel; 
 
 /**
 * Handles everything that is not input or rendering related.
@@ -105,9 +107,10 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 
     RegisterGameObject(new Player(Transform(vec3(0.0, 0.0, 0.0))));
 	
-	worldMap = new shared(Map)();
+	worldMap = new Map();
 	GenerateMap(worldMap);
 
+	worldMapModel = new MapModel(worldMap);	
 
 	/*
 		End First Scene Init Script:
@@ -136,13 +139,20 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 			accumulator -= PHYSICS_DT;
 			lastFrameTime = CurrentTime();
         }
-        
-		//GLVM Render Extraction
-		auto dataArr = ExtractRenderObjects(CurrentTime() - lastFrameTime);
+       	
+	   	/**	
+		 * GLVM Render Extraction
+		 **/
 
+		//Hexes
+		worldMapModel.RefreshChunks();
+
+		//Objects	
+		auto dataArr = ExtractRenderObjects(CurrentTime() - lastFrameTime);
 		sort(cast(RenderData[])dataArr);
 		
         rMessage.SetData([[short(1)]], cast(immutable)dataArr);
+		rMessage.cm = cast(shared) worldMapModel.cm;
 
 		Thread.sleep( dur!("msecs")(1));  
     }
@@ -157,35 +167,11 @@ void PhysicsThread(Tid parentTid, shared(RenderMessage) rMessage)
 {
 }
 
-shared MapModel worldMapModel; 
-
-/**
-* Prepares various items in the game world for rendering
-*
-* Runs on Thread 3
-*/
-void ExtractionThread(Tid parentTid)
-{
-    while(worldMap is null && !InputStates.shouldQuit)
-	{
-		Thread.sleep( dur!("msecs")(1));  
-	}
-	worldMapModel = new shared(MapModel)(worldMap);	
-
-    while(!InputStates.shouldQuit)
-	{
-		worldMapModel.RefreshChunks();
-		Thread.sleep( dur!("msecs")(5));  
-	}
-}
-
 /**
 * Data extractions from the LogicalGameState
 */
 immutable (immutable RenderData)[] ExtractRenderObjects(double tickOffset)
 {
-	//RenderData a = RenderData(0, [0x3F]);
-
 	RenderData[] rd;
 
 	foreach(ulong i, shared GameObject renderableObj; objectGroups[IterableObjectTypes.RENDERABLE])
@@ -204,6 +190,8 @@ class RenderMessage
 	private shared immutable (short)[][] mHexData;
 	private shared immutable (RenderData)[] mObjectData;
 
+	public shared ChunkModel cm;
+
 	/**
 	* Set the data that is going to be rendered the next time the rendering loop executes.
 	*/
@@ -212,7 +200,7 @@ class RenderMessage
 		mHexData = cast(shared)hexData;
 		mObjectData = cast(shared)objectData;
 	}
-
+	
 	/**
 	* Use all of the RenderData objects that were exracted to render the scene
 	*/
@@ -227,8 +215,14 @@ class RenderMessage
 		}
 		
 		//Render Map
-		DrawRegion(cast(ushort[16][16][16]*)worldMap.hexes, 0, 0, 0);
+
+		DrawRegion(cast(ChunkModel)cm, 0, 0, 0);
 
 		renderer.Render();
+	}
+
+	public shared bool Ready()
+	{
+		return true;
 	}
 }
