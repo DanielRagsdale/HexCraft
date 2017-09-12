@@ -52,7 +52,7 @@ class MapModel
 
 			coordinate c = mWorldMap.outdatedChunks.front();
 
-			ushort[16][16][16] chunk = mWorldMap.getChunkVal(c).hexes;
+			const ushort[16][16][16] chunk = mWorldMap.getChunkRef(c).hexes;
 
 			ChunkModel model;
 			

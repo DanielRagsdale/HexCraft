@@ -14,7 +14,7 @@ import renderer;
 /**
 * The array of draw functions that called with the information from RenderData
 */
-immutable void function(immutable (byte)[] b)[] DrawFunctions =
+void function(byte[] b)[] DrawFunctions =
 	[
 	&SetCamera,//0
 	&Demo,
@@ -27,7 +27,7 @@ immutable void function(immutable (byte)[] b)[] DrawFunctions =
 *
 * [camTransformMatrix]
 */
-void SetCamera(immutable (byte)[] b)
+void SetCamera(byte[] b)
 {
 	mat4 parsed = *cast(mat4*)&b[0];
 
@@ -37,7 +37,7 @@ void SetCamera(immutable (byte)[] b)
 /**
 * Demo render function
 */
-void Demo(immutable (byte)[] b)
+void Demo(byte[] b)
 {
 }
 
@@ -46,7 +46,7 @@ void Demo(immutable (byte)[] b)
 *
 * [primitiveType, primTransformMatrix, ...]
 */
-void DrawPrimitives(immutable (byte)[] b)
+void DrawPrimitives(byte[] b)
 {
 //TODO
 
@@ -134,7 +134,7 @@ Mesh[3] meshes;
 *
 * [objID, objTransformMatrix, ...]
 */
-void MeshRender(immutable (byte)[] b)
+void MeshRender(byte[] b)
 {
     short id = *cast(short*)&b[0];
 

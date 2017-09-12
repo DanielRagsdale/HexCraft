@@ -6,7 +6,7 @@ void GenerateMap(Map map)
 {
 	foreach(i; 0 .. 3)
 	{
-		Chunk* chunk = map.getChunkRef(0, 0, i);
+		Chunk* chunk = map.getChunkPointer(0, 0, i);
 
 	foreach (x; 1 .. 15)
 	{

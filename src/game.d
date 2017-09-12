@@ -151,7 +151,9 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 		auto dataArr = ExtractRenderObjects(CurrentTime() - lastFrameTime);
 		sort(cast(RenderData[])dataArr);
 		
-        rMessage.SetData(cast(immutable)[worldMapModel.getChunkModel(coordinate(0,0,0)), worldMapModel.getChunkModel(coordinate(0,0,1))], cast(immutable)dataArr);
+        rMessage.SetData([worldMapModel.getChunkModel(coordinate(0,0,0)), 
+				worldMapModel.getChunkModel(coordinate(0,0,1))], dataArr);
+
 		Thread.sleep( dur!("msecs")(1));  
     }
 }
@@ -168,7 +170,7 @@ void PhysicsThread(Tid parentTid, shared(RenderMessage) rMessage)
 /**
 * Data extractions from the LogicalGameState
 */
-immutable (immutable RenderData)[] ExtractRenderObjects(double tickOffset)
+RenderData[] ExtractRenderObjects(double tickOffset)
 {
 	RenderData[] rd;
 
@@ -177,7 +179,7 @@ immutable (immutable RenderData)[] ExtractRenderObjects(double tickOffset)
 		rd ~= (cast(IRenderable)renderableObj).Render(tickOffset);
 	}
 
-	return cast(immutable) rd;
+	return rd;
 }
 
 /**
@@ -185,13 +187,13 @@ immutable (immutable RenderData)[] ExtractRenderObjects(double tickOffset)
 */
 class RenderMessage
 {
-	private shared immutable (ChunkModel)[] mHexData;
-	private shared immutable (RenderData)[] mObjectData;
+	private shared (ChunkModel)[] mHexData;
+	private shared (RenderData)[] mObjectData;
 
 	/**
 	* Set the data that is going to be rendered the next time the rendering loop executes.
 	*/
-	public shared void SetData(immutable(ChunkModel)[] hexData, immutable(RenderData)[] objectData)
+	public shared void SetData(ChunkModel[] hexData, RenderData[] objectData)
 	{
 		mHexData = cast(shared)hexData;
 		mObjectData = cast(shared)objectData;
@@ -205,15 +207,15 @@ class RenderMessage
 		disp.Clear(0.5273f, 0.8047f, 0.9766f, 1.0f);
 		
 		//Render Objects
-		foreach(immutable RenderData rd; mObjectData)
+		foreach(shared RenderData rd; mObjectData)
 		{
-			renderObjectData.DrawFunctions[rd.RenderObjectID](rd.Data);
+			renderObjectData.DrawFunctions[rd.RenderObjectID](cast(byte[])rd.Data);
 		}
 		
 		//Render Map
-		foreach(immutable ChunkModel cm; mHexData)
+		foreach(shared ChunkModel cm; mHexData)
 		{
-			DrawRegion(cast(ChunkModel)cm, cm.loc);
+			DrawRegion(cast(ChunkModel)cm, cast(coordinate)cm.loc);
 		}
 
 		renderer.Render();

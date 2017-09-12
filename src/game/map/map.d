@@ -27,7 +27,17 @@ class Map
 		return chunks[c];
 	}
 	
-	Chunk* getChunkRef(int x, int y, int z)
+	ref Chunk getChunkRef(coordinate c)
+	{
+		Chunk* test = c in chunks;
+		if(test is null)
+		{
+			chunks[c] = Chunk();
+		}
+		return chunks[c];
+	}
+
+	Chunk* getChunkPointer(int x, int y, int z)
 	{
 		Chunk* test = coordinate(x,y,z) in chunks;
 		if(test is null)
