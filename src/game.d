@@ -31,7 +31,7 @@ import map;
 import mapModel;
 import generator;
 
-import values;
+import util.values;
 
 shared RenderMessage rMessage;
 
@@ -151,9 +151,7 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 		auto dataArr = ExtractRenderObjects(CurrentTime() - lastFrameTime);
 		sort(cast(RenderData[])dataArr);
 		
-        rMessage.SetData([worldMapModel.getChunkModel(coordinate(0,0,0)), 
-				worldMapModel.getChunkModel(coordinate(0,0,1))], dataArr);
-
+        rMessage.SetData(worldMapModel.cm.values, dataArr); 
 		Thread.sleep( dur!("msecs")(1));  
     }
 }

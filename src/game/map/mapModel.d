@@ -31,7 +31,7 @@ class MapModel
 {
 	Map mWorldMap;
 
-	ChunkModel[coordinate] cm;
+	public ChunkModel[coordinate] cm;
 
 	this(Map worldMap)
 	{

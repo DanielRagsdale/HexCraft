@@ -14,36 +14,31 @@ import renderer;
 import map;
 import mapModel;
 
-import values;
+import util.values;
 
 immutable vec3 dx = vec3(0.8660254,0,0.5);
 immutable vec3 dy = vec3(0, 1, 0);
 immutable vec3 dz = vec3(0,0,1);
 
-void DrawRegion(ChunkModel cm, coordinate c)
-{
-	DrawChunk(cm, c[0], c[1], c[2]);
-}
-
 Texture hexTex;
 HexMesh[coordinate] meshes;
-void DrawChunk(ref ChunkModel cm, int x, int y, int z)
+void DrawRegion(ChunkModel cm, coordinate c)
 {
 	if(hexTex is null)
 	{
  		hexTex = new Texture("./src/res/bitmap/hexes.png");
 	}
 
-	HexMesh* m = coordinate(x, y, z) in meshes;	
+	HexMesh* m = c in meshes;	
 	if(m is null)
 	{
-		meshes[coordinate(x,y,z)] = new HexMesh(cm);
+		meshes[c] = new HexMesh(cm);
 	}
 	hexTex.Bind();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
 
-	DrawSimpleChunk(meshes[coordinate(x,y,z)], mat4.identity().translate(x * CHUNK_SIZE * dx + y * CHUNK_SIZE * dy + z * CHUNK_SIZE * dz));
+	DrawSimpleChunk(meshes[c], mat4.identity().translate(c[0] * CHUNK_SIZE * dx + c[1] * CHUNK_SIZE * dy + c[2] * CHUNK_SIZE * dz));
 }
 
 /**

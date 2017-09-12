@@ -3,7 +3,7 @@ import std.stdio;
 import std.math;
 import std.container.slist;
 
-import values;
+import util.values;
 
 alias coordinate = Tuple!(int, int, int);
 

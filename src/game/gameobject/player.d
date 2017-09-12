@@ -14,7 +14,7 @@ import util.mathM;
 
 import gameObject;
 
-import values;
+import util.values;
 
 class Player : GameObject, IRenderable
 {
