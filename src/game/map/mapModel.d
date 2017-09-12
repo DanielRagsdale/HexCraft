@@ -31,18 +31,16 @@ class MapModel
 {
 	Map mWorldMap;
 
-	ChunkModel cm;
+	ChunkModel[coordinate] cm;
 
 	this(Map worldMap)
 	{
 		mWorldMap = worldMap;
-		cm = ChunkModel();
 	}	
 	
-
 	ref ChunkModel getChunkModel(coordinate c)
 	{
-		return cm;	
+		return cm[c];	
 	}
 
 	bool RefreshChunks()
@@ -54,9 +52,9 @@ class MapModel
 
 			coordinate c = mWorldMap.outdatedChunks.front();
 
-			ushort[16][16][16] chunk = mWorldMap.getChunk(c);
+			ushort[16][16][16] chunk = mWorldMap.getChunkVal(c).hexes;
 
-			alias model = cm;
+			ChunkModel model;
 			
 			foreach (x; 1 .. 15)
 			{
@@ -65,7 +63,8 @@ class MapModel
 			foreach (z; 1 .. 15)
 			{
 
-				if(!chunk[x][y][z])
+				int texNum = chunk[x][y][z];
+				if(!texNum)
 				{
 					continue;
 				}
@@ -73,7 +72,7 @@ class MapModel
 				//Top
 				if(!chunk[x][y+1][z])
 				{
-					int offset = cast(int)cm.positions.length;
+					int offset = cast(int)model.positions.length;
 
 					foreach(i; 0..6)
 					{
@@ -87,7 +86,7 @@ class MapModel
 				//Bottom
 				if(!chunk[x][y-1][z])
 				{
-					int offset = cast(int)cm.positions.length;
+					int offset = cast(int)model.positions.length;
 
 					foreach(i; 6..12)
 					{
@@ -99,87 +98,86 @@ class MapModel
 					model.indices ~= [[offset+0,offset+1,offset+5],[offset+1,offset+4,offset+5],[offset+1,offset+2,offset+4],[offset+2,offset+3,offset+4]];
 				}					
 				//Side 0
-				if(!chunk[x-1][y][z+1])
+				if(!chunk[x-1][y][z])
 				{
-					int offset = cast(int)cm.positions.length;
+					int offset = cast(int)model.positions.length;
 
 					foreach(i; [0,1,6,7])
 					{
 						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
 						model.positions ~= [temp.x, temp.y, temp.z];
 					}
-					model.texCoords ~= [[0.1f, 0.1f],[0.1f, 0.1f],[0.1f, 0.1f],[0.1f, 0.1f]];
+					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
 
 					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 				}
 				//Side 1
-				if(!chunk[x][y][z+1])
+				if(!chunk[x][y][z-1])
 				{
-					int offset = cast(int)cm.positions.length;
+					int offset = cast(int)model.positions.length;
 
 					foreach(i; [1,2,7,8])
 					{
 						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
 						model.positions ~= [temp.x, temp.y, temp.z];
 					}
-					model.texCoords ~= [[0.1f, 0.1f],[0.1f, 0.1f],[0.1f, 0.1f],[0.1f, 0.1f]];
+					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
 
 					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 				}
 				//Side 2
-				if(!chunk[x+1][y][z])
+				if(!chunk[x+1][y][z-1])
 				{
-					int offset = cast(int)cm.positions.length;
+					int offset = cast(int)model.positions.length;
 
 					foreach(i; [2,3,8,9])
 					{
 						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
 						model.positions ~= [temp.x, temp.y, temp.z];
 					}
-					model.texCoords ~= [[0.1f, 0.1f],[0.1f, 0.1f],[0.1f, 0.1f],[0.1f, 0.1f]];
+					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
 
 					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 				}
 				//Side 3
-				if(!chunk[x+1][y][z-1])
+				if(!chunk[x+1][y][z])
 				{
-					int offset = cast(int)cm.positions.length;
+					int offset = cast(int)model.positions.length;
 
 					foreach(i; [3,4,9,10])
 					{
 						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
 						model.positions ~= [temp.x, temp.y, temp.z];
 					}
-					model.texCoords ~= [[0.1f, 0.1f],[0.1f, 0.1f],[0.1f, 0.1f],[0.1f, 0.1f]];
+					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
 
 					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 				}
 				//Side 4
-				if(!chunk[x][y][z-1])
+				if(!chunk[x][y][z+1])
 				{
-					int offset = cast(int)cm.positions.length;
+					int offset = cast(int)model.positions.length;
 
 					foreach(i; [4,5,10,11])
 					{
 						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
 						model.positions ~= [temp.x, temp.y, temp.z];
 					}
-					model.texCoords ~= [[0.2f, 0.2f],[0.2f, 0.2f],[0.2f, 0.2f],[0.2f, 0.2f]];
+					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
 
 					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 				}
 				//Side 5
-				if(!chunk[x-1][y][z])
+				if(!chunk[x-1][y][z+1])
 				{
-					int offset = cast(int)cm.positions.length;
+					int offset = cast(int)model.positions.length;
 
 					foreach(i; [5,0,11,6])
 					{
 						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
 						model.positions ~= [temp.x, temp.y, temp.z];
 					}
-					model.texCoords ~= [[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f]];
-
+					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]]; 
 					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 				}
 
@@ -187,6 +185,8 @@ class MapModel
 			}
 			}
 
+			model.loc = c;
+			cm[c] = model;
 
 			mWorldMap.outdatedChunks.removeFront();
 		}
@@ -200,6 +200,8 @@ struct ChunkModel
 	GLfloat[3][] positions;
 	GLfloat[2][] texCoords;
 	GLint[3][] indices;
+
+	coordinate loc;
 }
 
 

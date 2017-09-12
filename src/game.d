@@ -151,9 +151,7 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 		auto dataArr = ExtractRenderObjects(CurrentTime() - lastFrameTime);
 		sort(cast(RenderData[])dataArr);
 		
-        rMessage.SetData([[short(1)]], cast(immutable)dataArr);
-		rMessage.cm = cast(shared) worldMapModel.cm;
-
+        rMessage.SetData(cast(immutable)[worldMapModel.getChunkModel(coordinate(0,0,0)), worldMapModel.getChunkModel(coordinate(0,0,1))], cast(immutable)dataArr);
 		Thread.sleep( dur!("msecs")(1));  
     }
 }
@@ -187,15 +185,13 @@ immutable (immutable RenderData)[] ExtractRenderObjects(double tickOffset)
 */
 class RenderMessage
 {
-	private shared immutable (short)[][] mHexData;
+	private shared immutable (ChunkModel)[] mHexData;
 	private shared immutable (RenderData)[] mObjectData;
-
-	public shared ChunkModel cm;
 
 	/**
 	* Set the data that is going to be rendered the next time the rendering loop executes.
 	*/
-	public shared void SetData(immutable(short)[][] hexData, immutable(RenderData)[] objectData)
+	public shared void SetData(immutable(ChunkModel)[] hexData, immutable(RenderData)[] objectData)
 	{
 		mHexData = cast(shared)hexData;
 		mObjectData = cast(shared)objectData;
@@ -206,7 +202,7 @@ class RenderMessage
 	*/
 	public shared void Render()
 	{
-		disp.Clear(0.1f, 0.1f, 0.1f, 1.0f);
+		disp.Clear(0.5273f, 0.8047f, 0.9766f, 1.0f);
 		
 		//Render Objects
 		foreach(immutable RenderData rd; mObjectData)
@@ -215,8 +211,10 @@ class RenderMessage
 		}
 		
 		//Render Map
-
-		DrawRegion(cast(ChunkModel)cm, 0, 0, 0);
+		foreach(immutable ChunkModel cm; mHexData)
+		{
+			DrawRegion(cast(ChunkModel)cm, cm.loc);
+		}
 
 		renderer.Render();
 	}
