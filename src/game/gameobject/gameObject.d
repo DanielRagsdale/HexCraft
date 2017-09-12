@@ -3,6 +3,8 @@ import gl3n.linalg;
 import std.stdio;
 import core.vararg;
 
+import map;
+
 import IRenderable;
 
 /**
@@ -36,7 +38,7 @@ abstract class GameObject
         this.ID = ID;
     }
 
-	public abstract void Update();
+	public abstract void Update(ref Map map);
     
 	/**
     * Returns the transform mat4 associated with this GameObject.

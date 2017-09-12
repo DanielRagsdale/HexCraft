@@ -4,10 +4,7 @@ import derelict.opengl3.gl;
 import gl3n.linalg;
 
 import map;
-
-immutable vec3 dx = vec3(0.8660254,0,0.5);
-immutable vec3 dy = vec3(0, 1, 0);
-immutable vec3 dz = vec3(0,0,1);
+import util.values;
 
 immutable vec3[] hexVertices = [
 	// top
@@ -127,7 +124,7 @@ class MapModel
 
 		foreach(i; 0..6)
 		{
-			vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
+			vec3 temp = (hexVertices[i] + x*hex_dx + y*hex_dy + z*hex_dz);
 			model.positions ~= [temp.x, temp.y, temp.z];
 		}
 		model.texCoords ~= [[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f]];
@@ -140,7 +137,7 @@ class MapModel
 
 		foreach(i; 6..12)
 		{
-			vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
+			vec3 temp = (hexVertices[i] + x*hex_dx + y*hex_dy + z*hex_dz);
 			model.positions ~= [temp.x, temp.y, temp.z];
 		}
 		model.texCoords ~= [[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f]];
@@ -155,7 +152,7 @@ class MapModel
 
 		foreach(i; [side+0,(side+1)%6,side+6,(side+1)%6+6])
 		{
-			vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
+			vec3 temp = (hexVertices[i] + x*hex_dx + y*hex_dy + z*hex_dz);
 			model.positions ~= [temp.x, temp.y, temp.z];
 		}
 		model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],

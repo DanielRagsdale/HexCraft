@@ -16,10 +16,6 @@ import mapModel;
 
 import util.values;
 
-immutable vec3 dx = vec3(0.8660254,0,0.5);
-immutable vec3 dy = vec3(0, 1, 0);
-immutable vec3 dz = vec3(0,0,1);
-
 Texture hexTex;
 HexMesh[coordinate] meshes;
 void DrawRegion(ChunkModel cm, coordinate c)
@@ -38,7 +34,8 @@ void DrawRegion(ChunkModel cm, coordinate c)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
 
-	DrawSimpleChunk(meshes[c], mat4.identity().translate(c[0] * CHUNK_SIZE * dx + c[1] * CHUNK_SIZE * dy + c[2] * CHUNK_SIZE * dz));
+	DrawSimpleChunk(meshes[c], mat4.identity().translate(c[0] * CHUNK_SIZE * hex_dx 
+				+ c[1] * CHUNK_SIZE * hex_dy + c[2] * CHUNK_SIZE * hex_dz));
 }
 
 /**

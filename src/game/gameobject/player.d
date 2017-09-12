@@ -13,6 +13,7 @@ import renderObjectData;
 import util.mathM;
 
 import gameObject;
+import map;
 
 import util.values;
 
@@ -35,7 +36,7 @@ class Player : GameObject, IRenderable
 
 	Transform lastTrans;
 
-    public override void Update()
+    public override void Update(ref Map map)
     {
 		lastTrans = transform;
 
@@ -74,7 +75,11 @@ class Player : GameObject, IRenderable
 		}
 		else
 		{
-			transform.position.y = (transform.position.y - 0.75) * 0.95f + 0.75f;
+			vec3 hexPos = toHex(transform.position);
+			if(!map.getBlock(cast(int)hexPos.x, cast(int)hexPos.y - 1, cast(int)hexPos.z))
+			{
+				transform.position.y -= 1;
+			}
 		}	
 
 		rotationX -= InputStates.mouseXRel * sensitivity;

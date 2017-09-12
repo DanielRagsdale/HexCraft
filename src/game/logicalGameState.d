@@ -1,6 +1,7 @@
 import std.stdio;
 
 import gameObject;
+import map;
 
 /**
 * Stores the information about the game state.
@@ -8,7 +9,7 @@ import gameObject;
 */
 enum IterableObjectTypes
 {
-	RENDERABLE, COLLIDABLE, END
+	RENDERABLE, COLLIDABLE, PHYSICAL, END
 }
 
 /**
@@ -48,10 +49,10 @@ public void AddObjectToIterable(GameObject go, IterableObjectTypes type)
 /**
 * The global update function.
 */
-public void Update()
+public void Update(ref Map map)
 {
 	foreach(go; gameObjects)
 	{
-		go.Update();
+		go.Update(map);
 	}
 }

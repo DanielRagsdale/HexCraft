@@ -89,7 +89,6 @@ void RenderInputLoop(shared(RenderMessage) rMessage)
 }
 
 Map worldMap; 
-
 MapModel worldMapModel; 
 
 /**
@@ -135,7 +134,9 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
         //Constant framerate game logic and physics ticks.
         while(accumulator >= PHYSICS_DT)
         {
-			Update();
+			Update(worldMap);
+			//UpdatePhysics();
+
 			accumulator -= PHYSICS_DT;
 			lastFrameTime = CurrentTime();
         }

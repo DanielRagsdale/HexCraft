@@ -5,6 +5,8 @@ import std.stdio;
 
 import gl3n.linalg;
 
+import util.values;
+
 //TODO
 real roll(quat q)
 {
@@ -25,4 +27,10 @@ real pitch(quat q)
 real yaw(quat q)
 {
 	return atan2(2*(q.w*q.z+q.x*q.y),  1-2*(q.y*q.y + q.z*q.z));
+}
+
+
+vec3 toHex(vec3 rect)
+{
+	return rect * matrixToHex;
 }
