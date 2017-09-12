@@ -174,7 +174,7 @@ RenderData[] ExtractRenderObjects(double tickOffset)
 {
 	RenderData[] rd;
 
-	foreach(ulong i, shared GameObject renderableObj; objectGroups[IterableObjectTypes.RENDERABLE])
+	foreach(ulong i, GameObject renderableObj; objectGroups[IterableObjectTypes.RENDERABLE])
 	{
 		rd ~= (cast(IRenderable)renderableObj).Render(tickOffset);
 	}
