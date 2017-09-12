@@ -56,13 +56,12 @@ class MapModel
 
 			ChunkModel model;
 			
-			foreach (x; 1 .. 15)
+			foreach (x; 0 .. 16)
 			{
-			foreach (y; 1 .. 15)
+			foreach (y; 0 .. 16)
 			{
-			foreach (z; 1 .. 15)
+			foreach (z; 0 .. 16)
 			{
-
 				int texNum = chunk[x][y][z];
 				if(!texNum)
 				{
@@ -70,117 +69,45 @@ class MapModel
 				}
 
 				//Top
-				if(!chunk[x][y+1][z])
+				if(!mWorldMap.getBlockRelative(c,x,y+1,z))
 				{
-					int offset = cast(int)model.positions.length;
-
-					foreach(i; 0..6)
-					{
-						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
-						model.positions ~= [temp.x, temp.y, temp.z];
-					}
-					model.texCoords ~= [[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f]];
-
-					model.indices ~= [[offset+0,offset+5,offset+1],[offset+1,offset+5,offset+4],[offset+1,offset+4,offset+2],[offset+2,offset+4,offset+3]];
+					addTop(model, x, y, z, texNum);
 				}					
 				//Bottom
-				if(!chunk[x][y-1][z])
+				if(!mWorldMap.getBlockRelative(c,x,y-1,z))
 				{
-					int offset = cast(int)model.positions.length;
-
-					foreach(i; 6..12)
-					{
-						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
-						model.positions ~= [temp.x, temp.y, temp.z];
-					}
-					model.texCoords ~= [[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f]];
-
-					model.indices ~= [[offset+0,offset+1,offset+5],[offset+1,offset+4,offset+5],[offset+1,offset+2,offset+4],[offset+2,offset+3,offset+4]];
+					addBottom(model, x, y, z, texNum);
 				}					
 				//Side 0
-				if(!chunk[x-1][y][z])
+				if(!mWorldMap.getBlockRelative(c,x-1,y,z))
 				{
-					int offset = cast(int)model.positions.length;
-
-					foreach(i; [0,1,6,7])
-					{
-						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
-						model.positions ~= [temp.x, temp.y, temp.z];
-					}
-					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
-
-					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
+					addSide!0(model, x, y, z, texNum);
 				}
 				//Side 1
-				if(!chunk[x][y][z-1])
+				if(!mWorldMap.getBlockRelative(c,x,y,z-1))
 				{
-					int offset = cast(int)model.positions.length;
-
-					foreach(i; [1,2,7,8])
-					{
-						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
-						model.positions ~= [temp.x, temp.y, temp.z];
-					}
-					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
-
-					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
+					addSide!1(model, x, y, z, texNum);
 				}
 				//Side 2
-				if(!chunk[x+1][y][z-1])
+				if(!mWorldMap.getBlockRelative(c,x+1,y,z-1))
 				{
-					int offset = cast(int)model.positions.length;
-
-					foreach(i; [2,3,8,9])
-					{
-						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
-						model.positions ~= [temp.x, temp.y, temp.z];
-					}
-					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
-
-					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
+					addSide!2(model, x, y, z, texNum);
 				}
 				//Side 3
-				if(!chunk[x+1][y][z])
+				if(!mWorldMap.getBlockRelative(c,x+1,y,z))
 				{
-					int offset = cast(int)model.positions.length;
-
-					foreach(i; [3,4,9,10])
-					{
-						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
-						model.positions ~= [temp.x, temp.y, temp.z];
-					}
-					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
-
-					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
+					addSide!3(model, x, y, z, texNum);
 				}
 				//Side 4
-				if(!chunk[x][y][z+1])
+				if(!mWorldMap.getBlockRelative(c,x,y,z+1))
 				{
-					int offset = cast(int)model.positions.length;
-
-					foreach(i; [4,5,10,11])
-					{
-						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
-						model.positions ~= [temp.x, temp.y, temp.z];
-					}
-					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
-
-					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
+					addSide!4(model, x, y, z, texNum);
 				}
 				//Side 5
-				if(!chunk[x-1][y][z+1])
+				if(!mWorldMap.getBlockRelative(c,x-1,y,z+1))
 				{
-					int offset = cast(int)model.positions.length;
-
-					foreach(i; [5,0,11,6])
-					{
-						vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
-						model.positions ~= [temp.x, temp.y, temp.z];
-					}
-					model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]]; 
-					model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
+					addSide!5(model, x, y, z, texNum);
 				}
-
 			}
 			}
 			}
@@ -192,6 +119,49 @@ class MapModel
 		}
 
 		return didSomething;
+	}
+	
+	void addTop(ref ChunkModel model, int x, int y, int z, int texNum)
+	{
+		int offset = cast(int)model.positions.length;
+
+		foreach(i; 0..6)
+		{
+			vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
+			model.positions ~= [temp.x, temp.y, temp.z];
+		}
+		model.texCoords ~= [[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f]];
+		model.indices ~= [[offset+0,offset+5,offset+1],[offset+1,offset+5,offset+4],
+				[offset+1,offset+4,offset+2],[offset+2,offset+4,offset+3]];
+	}
+	void addBottom(ref ChunkModel model, int x, int y, int z, int texNum)
+	{
+		int offset = cast(int)model.positions.length;
+
+		foreach(i; 6..12)
+		{
+			vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
+			model.positions ~= [temp.x, temp.y, temp.z];
+		}
+		model.texCoords ~= [[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f]];
+
+		model.indices ~= [[offset+0,offset+1,offset+5],[offset+1,offset+4,offset+5],
+				[offset+1,offset+2,offset+4],[offset+2,offset+3,offset+4]];
+	}
+
+	void addSide(int side)(ref ChunkModel model, int x, int y, int z, int texNum)
+	{
+		int offset = cast(int)model.positions.length;
+
+		foreach(i; [side+0,(side+1)%6,side+6,(side+1)%6+6])
+		{
+			vec3 temp = (hexVertices[i] + x*dx + y*dy + z*dz);
+			model.positions ~= [temp.x, temp.y, temp.z];
+		}
+		model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],
+					[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
+
+		model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 	}
 }
 

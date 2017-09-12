@@ -1,8 +1,9 @@
 import derelict.opengl3.gl;
 
 import std.stdio;
+import mapModel;
 
-class Mesh
+class HexMesh
 {
         enum
         {
@@ -17,10 +18,10 @@ class Mesh
         GLuint[NUM_BUFFERS] m_vertexArrayBuffers;
         uint m_drawCount;
     
-    
-    this(GLfloat* vertices, GLfloat* texCoords, uint numVertices, GLint* indices, uint numIndices)
+    this(ref ChunkModel cm)
     {    
-	    m_drawCount = numIndices;
+		int numVertices = cast(int)cm.positions.length;
+	    m_drawCount = cast(int)cm.indices.length * 3;
 	
 	    glGenVertexArrays(1, &m_vertexArrayObject);
 	    glBindVertexArray(m_vertexArrayObject);
@@ -29,21 +30,21 @@ class Mesh
 
 	    //Bind and push the vertex data
             glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[POSITION_VB]);
-            glBufferData(GL_ARRAY_BUFFER, float.sizeof * numVertices * 3, vertices, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, float.sizeof * numVertices * 3, &cm.positions[0][0], GL_STATIC_DRAW);
 
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, null);
 
         //Bind and push the texture data
             glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[TEXCOORD_VB]);
-            glBufferData(GL_ARRAY_BUFFER, float.sizeof * numVertices * 2, texCoords, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, float.sizeof * numVertices * 2, &cm.texCoords[0][0], GL_STATIC_DRAW);
 
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, null);
 
 		//Bind and push the index data
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexArrayBuffers[INDEX_VB]);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, int.sizeof * numIndices, indices, GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, int.sizeof * m_drawCount, &cm.indices[0][0], GL_STATIC_DRAW);
 
 	    glBindVertexArray(0);
 

@@ -6,7 +6,7 @@ import util.obj;
 
 import std.stdio;
 
-import mesh;
+import hexMesh;
 import texture;
 import game;
 import renderer;
@@ -26,34 +26,31 @@ void DrawRegion(ChunkModel cm, coordinate c)
 }
 
 Texture hexTex;
-Mesh m;
+HexMesh[coordinate] meshes;
 void DrawChunk(ref ChunkModel cm, int x, int y, int z)
 {
 	if(hexTex is null)
 	{
  		hexTex = new Texture("./src/res/bitmap/hexes.png");
 	}
+
+	HexMesh* m = coordinate(x, y, z) in meshes;	
 	if(m is null)
 	{
-		if(!cm.positions.length)
-		{
-			return;
-		}
-		m = new Mesh(&cm.positions[0][0], &cm.texCoords[0][0], cast(int)cm.positions.length, &cm.indices[0][0], cast(int)cm.indices.length * 3);
+		meshes[coordinate(x,y,z)] = new HexMesh(cm);
 	}
 	hexTex.Bind();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
 
-	DrawSimpleChunk(m, mat4.identity().translate(x * CHUNK_SIZE * dx + y * CHUNK_SIZE * dy + z * CHUNK_SIZE * dz));
+	DrawSimpleChunk(meshes[coordinate(x,y,z)], mat4.identity().translate(x * CHUNK_SIZE * dx + y * CHUNK_SIZE * dy + z * CHUNK_SIZE * dz));
 }
 
 /**
 * Draw the given mesh
 * Transformed with given transformMatrix
 */
-ulong counter;
-void DrawSimpleChunk(Mesh mesh, mat4 transformMatrix)
+void DrawSimpleChunk(HexMesh mesh, mat4 transformMatrix)
 {
     GLint shLoc = SetShaderProgram(0);
 
