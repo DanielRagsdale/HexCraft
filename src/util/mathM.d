@@ -30,7 +30,32 @@ real yaw(quat q)
 }
 
 
+public static float ClampAngle (float angle, float min, float max)
+{
+	if (angle < -360F)
+	{
+		angle += 360F;
+		return ClampAngle(angle, min, max);
+	}
+	if (angle > 360F)
+	{
+		angle -= 360F;
+		return ClampAngle(angle, min, max);
+	}
+		
+	return clamp (angle, min, max);
+}
+
+
 vec3 toHex(vec3 rect)
 {
 	return rect * matrixToHex;
 }
+
+vec3 toSquare(vec3 hex)
+{
+	return hex * matrixToSquare;
+}
+
+
+

@@ -127,7 +127,7 @@ class MapModel
 			vec3 temp = (hexVertices[i] + x*hex_dx + y*hex_dy + z*hex_dz);
 			model.positions ~= [temp.x, temp.y, temp.z];
 		}
-		model.texCoords ~= [[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f]];
+		model.texCoords ~= [[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f]];
 		model.indices ~= [[offset+0,offset+5,offset+1],[offset+1,offset+5,offset+4],
 				[offset+1,offset+4,offset+2],[offset+2,offset+4,offset+3]];
 	}

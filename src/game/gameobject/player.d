@@ -9,6 +9,8 @@ import util.input;
 import logicalGameState;
 
 import IRenderable;
+import IPhysical;
+
 import renderObjectData;
 import util.mathM;
 
@@ -17,7 +19,7 @@ import map;
 
 import util.values;
 
-class Player : GameObject, IRenderable
+class Player : GameObject, IRenderable, IPhysical
 {
 	quat originalRot;
 	float rotationX = 0.0f;
@@ -28,6 +30,7 @@ class Player : GameObject, IRenderable
 		super(trans);
 
         AddObjectToIterable(this, IterableObjectTypes.RENDERABLE);
+        AddObjectToIterable(this, IterableObjectTypes.PHYSICAL);
 		originalRot = transform.rotation;
 	}
 
@@ -35,52 +38,52 @@ class Player : GameObject, IRenderable
 	float sensitivity = 0.5f;
 
 	Transform lastTrans;
+	bool jumped = false;
 
     public override void Update(ref Map map)
     {
 		lastTrans = transform;
 
         vec3 movement;
-		
+	
+		transform.velocity.x = 0.0f;
+		transform.velocity.z = 0.0f;
+
         if(InputStates.keyW)
         {
 			movement = transform.rotation * vec3(0.0, 0.0, -1);
 			movement.y = 0;
-			transform.position += movement.normalized() * SPEED;
+			transform.velocity += movement.normalized() * SPEED_TRUE;
         }
         if(InputStates.keyS)
         {
 			movement = transform.rotation * vec3(0.0, 0.0, 1);
 			movement.y = 0;
-			transform.position += movement.normalized() * SPEED;
+			transform.velocity += movement.normalized() * SPEED_TRUE;
         }
         if(InputStates.keyA)
         {
 			movement = transform.rotation * vec3(-1, 0.0, 0.0);
 			movement.y = 0;
-			transform.position += movement.normalized() * SPEED;
+			transform.velocity += movement.normalized() * SPEED_TRUE;
         }
 		if(InputStates.keyD)
         {
 			movement = transform.rotation * vec3(1, 0.0, 0.0);
 			movement.y = 0;
-			transform.position += movement.normalized() * SPEED;
+			transform.velocity += movement.normalized() * SPEED_TRUE;
         }
-	
 
 		//TODO implement actual, not shitty jump mechanics 	
-		if(InputStates.keySPACE)
+		if(InputStates.keySPACE && !jumped)
 		{
-			transform.position.y += 0.2f;
+			transform.velocity.y = 5.0f;
+			jumped = true;
 		}
-		else
+		else if(!InputStates.keySPACE)
 		{
-			vec3 hexPos = toHex(transform.position);
-			if(!map.getBlock(cast(int)hexPos.x, cast(int)hexPos.y - 1, cast(int)hexPos.z))
-			{
-				transform.position.y -= 1;
-			}
-		}	
+			jumped = false;
+		}
 
 		rotationX -= InputStates.mouseXRel * sensitivity;
 		rotationY -= InputStates.mouseYRel * sensitivity;
@@ -88,17 +91,13 @@ class Player : GameObject, IRenderable
 		rotationX = ClampAngle(rotationX, -360, 360);
 		rotationY = ClampAngle(rotationY, -85, 85);
 
-		transform.rotation = originalRot * quat.identity.rotatey(rotationX * (PI / 180)) * quat.identity.rotatex(rotationY * (PI / 180));
+		transform.rotation = originalRot * quat.identity.rotatey(rotationX 
+				* (PI / 180)) * quat.identity.rotatex(rotationY * (PI / 180));
     }
 
-	public static float ClampAngle (float angle, float min, float max)
+	public double getRadius()
 	{
-		if (angle < -360F)
-			angle += 360F;
-		if (angle > 360F)
-			angle -= 360F;
-		
-		return clamp (angle, min, max);
+		return 0.75;
 	}
 
 	mat4 cameraMatrix = mat4.identity();
@@ -111,7 +110,7 @@ class Player : GameObject, IRenderable
 		vec3 dirVec = vec3(0,0,-1) * interpTrans.rotation;
 
 
-		cameraMatrix = mat4.look_at(interpTrans.position + vec3(0, 1, 0), interpTrans.position + vec3(0, 1, 0) + dirVec, vec3(0, 1, 0));
+		cameraMatrix = mat4.look_at(interpTrans.position + vec3(0, 0.75, 0), interpTrans.position + vec3(0, 0.75, 0) + dirVec, vec3(0, 1, 0));
 
 		byte[] serialized = *cast(byte[mat4.sizeof]*)(&cameraMatrix);
 		return RenderData(0, serialized);

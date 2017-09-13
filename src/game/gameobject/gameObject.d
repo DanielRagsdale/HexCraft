@@ -78,13 +78,19 @@ struct Transform
     public quat rotation;
     public vec3 scale;
 
-    alias getp_!"x" x;
-    alias getp_!"y" y;
-    alias getp_!"z" z;
+	public vec3 velocity;
 
-    alias gets_!"x" sx;
-    alias gets_!"y" sy;
-    alias gets_!"z" sz;
+    alias get_comp!("position","x") x;
+    alias get_comp!("position","y") y;
+    alias get_comp!("position","z") z;
+
+    alias get_comp!("scale","x") sx;
+    alias get_comp!("scale","y") sy;
+    alias get_comp!("scale","z") sz;
+
+    alias get_comp!("velocity","x") vx;
+    alias get_comp!("velocity","y") vy;
+    alias get_comp!("velocity","z") vz;
 
     /**
     * Create a Transform with the given position and default scale and rotation
@@ -92,32 +98,27 @@ struct Transform
     //TODO Expand to allow more general creation
     public this(vec3 pos)
     {
-        position = pos;
-        rotation = quat.identity;
-        scale = vec3(1, 1, 1);
+		this(pos, quat.identity, vec3(1,1,1));
     }
 
 	public this(vec3 pos, quat rot)
 	{
-        position = pos;
-        rotation = rot;
-        scale = vec3(1, 1, 1);
+		this(pos, rot, vec3(1,1,1));
 	}
 	
+	public this(vec3 pos, vec3 sc)
+	{
+		this(pos, quat.identity, sc);
+	}
+
 	public this(vec3 pos, quat rot, vec3 sc)
 	{
         position = pos;
         rotation = rot;
         scale = sc; 
+		velocity = vec3(0,0,0);
 	}
 	
-	public this(vec3 pos, vec3 sc)
-	{
-        position = pos;
-        rotation = quat.identity;
-        scale = sc; 
-	}
-
     public mat4 GetTransformMatrix()
     {
         //Rotation
@@ -137,17 +138,12 @@ struct Transform
         return outMatrix;
     }
 
-    @safe pure nothrow:
-    private @property ref getp_(string coord)()
-    {
-        mixin("return position." ~ coord[coord.length - 1] ~ ";");
-    }
+   	@safe pure nothrow: 
+	private @property ref get_comp(string aspect, string comp)()
+	{
+		mixin("return " ~ aspect ~ "." ~ comp ~ ";");
+	}
 
-    @safe pure nothrow:
-    private @property ref gets_(string coord)()
-    {
-        mixin("return scale." ~ coord[coord.length - 1] ~ ";");
-    }
 	
 	/**
 	  * Binary Operations

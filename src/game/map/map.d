@@ -22,9 +22,9 @@ class Map
 	
 	int getBlock(int x, int y, int z)
 	{
-		int cX = cast(int)floor(cast(float)x / 16);
-		int cY = cast(int)floor(cast(float)y / 16);
-		int cZ = cast(int)floor(cast(float)z / 16);
+		int cX = cast(int)floor(x / 16.0);
+		int cY = cast(int)floor(y / 16.0);
+		int cZ = cast(int)floor(z / 16.0);
 		
 		Chunk* test = coordinate(cX,cY,cZ) in chunks;
 		if(test is null)

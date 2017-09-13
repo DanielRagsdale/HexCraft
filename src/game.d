@@ -21,6 +21,7 @@ import IRenderable;
 import renderer;
 import display;
 import logicalGameState;
+import physicsEngine;
 import renderObjectData;
 import renderHexData;
 import gameObject;
@@ -135,7 +136,7 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
         while(accumulator >= PHYSICS_DT)
         {
 			Update(worldMap);
-			//UpdatePhysics();
+			TickPhysics(worldMap);
 
 			accumulator -= PHYSICS_DT;
 			lastFrameTime = CurrentTime();

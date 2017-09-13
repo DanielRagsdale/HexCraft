@@ -14,5 +14,14 @@ immutable vec3 hex_dx = vec3(0.8660254,0,0.5);
 immutable vec3 hex_dy = vec3(0, 1, 0);
 immutable vec3 hex_dz = vec3(0,0,1);
 
+immutable vec3[] hex_dn = [
+	-hex_dx,
+	-hex_dz,
+	 hex_dx - hex_dz,
+	 hex_dx,
+	 hex_dz,
+	-hex_dx + hex_dz
+];
+
 immutable mat3 matrixToSquare = mat3(vec3(0.8660254,0,0.5), vec3(0, 1, 0), vec3(0,0,1));
 immutable mat3 matrixToHex = matrixToSquare.inverse();
