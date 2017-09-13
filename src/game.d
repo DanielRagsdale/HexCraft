@@ -25,6 +25,7 @@ import physicsEngine;
 import renderObjectData;
 import renderHexData;
 import gameObject;
+import transform;
 
 import player;
 

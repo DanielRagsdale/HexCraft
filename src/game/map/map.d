@@ -13,12 +13,15 @@ class Map
 
 	auto outdatedChunks = SList!coordinate();
 	
-	this()
+	void setChunk(ref Chunk c, int x, int y, int z)
 	{
-		outdatedChunks.insert(coordinate(0, 0, 0));
-		outdatedChunks.insert(coordinate(0, 0, 1));
-		outdatedChunks.insert(coordinate(0, 0, 2));
+		setChunk(c, coordinate(x,y,z));
 	}
+	void setChunk(ref Chunk c, coordinate coord)
+	{
+		chunks[coord] = c;
+		outdatedChunks.insert(coord);
+	}	
 	
 	int getBlock(int x, int y, int z)
 	{

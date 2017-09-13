@@ -15,6 +15,7 @@ import renderObjectData;
 import util.mathM;
 
 import gameObject;
+import transform;
 import map;
 
 import util.values;
