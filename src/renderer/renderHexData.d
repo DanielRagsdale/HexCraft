@@ -18,21 +18,36 @@ import util.values;
 
 Texture hexTex;
 HexMesh[coordinate] meshes;
+uint[coordinate] chunkVersions;
+
 void DrawRegion(ChunkModel cm, coordinate c)
 {
 	if(hexTex is null)
 	{
  		hexTex = new Texture("./src/res/bitmap/hexes.png");
-	}
 
+		hexTex.Bind();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
+	}
+	else
+	{
+		hexTex.Bind();
+	}
+	
 	HexMesh* m = c in meshes;	
 	if(m is null)
 	{
 		meshes[c] = new HexMesh(cm);
+		chunkVersions[c] = cm.chunkVersion;
 	}
-	hexTex.Bind();
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
+
+	if(cm.chunkVersion != chunkVersions[c])
+	{
+		meshes[c].destroy;
+		meshes[c] = new HexMesh(cm);
+		chunkVersions[c] = cm.chunkVersion;
+	}
 
 	DrawSimpleChunk(meshes[c], mat4.identity().translate(c[0] * CHUNK_SIZE * hex_dx 
 				+ c[1] * CHUNK_SIZE * hex_dy + c[2] * CHUNK_SIZE * hex_dz));
@@ -49,7 +64,6 @@ void DrawSimpleChunk(HexMesh mesh, mat4 transformMatrix)
     GLint transformUniformLocation = glGetUniformLocation(shLoc, "transform");
     GLint cameraUniformLocation = glGetUniformLocation(shLoc, "camera");
     
-
     glUniformMatrix4fv(transformUniformLocation, 1, GL_FALSE, &transformMatrix[0][0]);
     glUniformMatrix4fv(cameraUniformLocation, 1, GL_FALSE, &renderer.cameraMatrix[0][0]);
 

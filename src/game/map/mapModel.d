@@ -45,12 +45,20 @@ class MapModel
 		bool didSomething = false;
 		while(!mWorldMap.outdatedChunks.empty())
 		{
+			uint chunkVersion = 0;
+
 			didSomething = true;
 
 			coordinate c = mWorldMap.outdatedChunks.front();
 
-			const ushort[16][16][16] chunk = mWorldMap.getChunkRef(c).hexes;
+			ChunkModel* old = c in cm;
+			if(old !is null)
+			{
+				chunkVersion = old.chunkVersion + 1;
+			}
+			
 
+			const ushort[16][16][16] chunk = mWorldMap.getChunkRef(c).hexes;
 			ChunkModel model;
 			
 			foreach (x; 0 .. 16)
@@ -110,6 +118,8 @@ class MapModel
 			}
 
 			model.loc = c;
+			model.chunkVersion = chunkVersion;
+
 			cm[c] = model;
 
 			mWorldMap.outdatedChunks.removeFront();
@@ -155,8 +165,8 @@ class MapModel
 			vec3 temp = (hexVertices[i] + x*hex_dx + y*hex_dy + z*hex_dz);
 			model.positions ~= [temp.x, temp.y, temp.z];
 		}
-		model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+8)/512f, 0.0f],
-					[(16*texNum)/512f, 16f/512f],[(16*texNum+8)/512f, 16f/512f]];
+		model.texCoords ~= [[(32*texNum)/512f, 0.0f],[(32*texNum+16)/512f, 0.0f],
+					[(32*texNum)/512f, 32f/512f],[(32*texNum+16)/512f, 32f/512f]];
 
 		model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 	}
@@ -169,6 +179,8 @@ struct ChunkModel
 	GLint[3][] indices;
 
 	coordinate loc;
+
+	uint chunkVersion;
 }
 
 

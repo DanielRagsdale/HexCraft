@@ -36,8 +36,7 @@ public void CreateDisplay(int width, int height, const(char)* title)
 }
 
 public void Render ()
-{ //disp.Update();
-
+{ 
     disp.SwapBuffers();
 }
 

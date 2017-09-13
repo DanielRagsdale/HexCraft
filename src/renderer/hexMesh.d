@@ -28,6 +28,12 @@ class HexMesh
 	
 	    glGenBuffers(NUM_BUFFERS, &m_vertexArrayBuffers[0]);
 
+		if(numVertices <= 0)
+		{
+	    	glBindVertexArray(0);
+			return;
+		}
+
 	    //Bind and push the vertex data
             glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[POSITION_VB]);
             glBufferData(GL_ARRAY_BUFFER, float.sizeof * numVertices * 3, &cm.positions[0][0], GL_STATIC_DRAW);

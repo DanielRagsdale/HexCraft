@@ -1,11 +1,12 @@
 import std.stdio;
+import std.math;
 
 import map;
 
 void GenerateMap(Map map)
 {
-	foreach(j; 0 .. 5)
-	foreach(i; 0 .. 5)
+	foreach(j; -2 .. 5)
+	foreach(i; -2 .. 5)
 	{
 		Chunk chunk = Chunk();
 
@@ -15,13 +16,13 @@ void GenerateMap(Map map)
 	{
 	foreach (z; 0 .. 16)
 	{
-		if(y<=(x / (i+1)))
+		if(y<=(x / (i+3)))
 		{
-			chunk.hexes[x][y][z] = cast(ushort) (x*y + z) % 15 + 1;
+			chunk.hexes[x][y][z] = cast(ushort) (x*y + z) % 8 + 1;
 		}
-		if(x*y*z > 256 * j)
+		if(x*y*z >= abs(256 * j))
 		{
-			chunk.hexes[x][y][z] = cast(ushort)j%2;
+			//chunk.hexes[x][y][z] = 1;
 		}
 		if((x-8)*(x-8)+y*y+(z-4)*(z-4) < 9)
 		{
@@ -32,5 +33,31 @@ void GenerateMap(Map map)
 	}
 
 	map.setChunk(chunk, j,0,i);
+	}
+	
+	foreach(j; -2 .. 5)
+	foreach(i; -2 .. 5)
+	{
+		Chunk chunk = Chunk();
+
+	foreach (x; 0 .. 16)
+	{
+	foreach (y; 0 .. 16)
+	{
+	foreach (z; 0 .. 16)
+	{
+		if(y == 15)
+		{
+			chunk.hexes[x][y][z] = 3;
+		}
+		else
+		{
+			chunk.hexes[x][y][z] = 2;
+		}
+	}
+	}
+	}
+
+	map.setChunk(chunk, j,-1,i);
 	}
 }

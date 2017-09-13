@@ -213,6 +213,7 @@ class RenderMessage
 			renderObjectData.DrawFunctions[rd.RenderObjectID](cast(byte[])rd.Data);
 		}
 		
+		writeln("******************* Render cycle mark");		
 		//Render Map
 		foreach(shared ChunkModel cm; mHexData)
 		{

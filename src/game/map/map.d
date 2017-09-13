@@ -20,9 +20,16 @@ class Map
 	void setChunk(ref Chunk c, coordinate coord)
 	{
 		chunks[coord] = c;
+		
+		coordinate below = coordinate(coord[0], coord[1] - 1, coord[2]);	
+		if(chunkExists(below))
+		{
+			outdatedChunks.insert(below);
+		}
+
 		outdatedChunks.insert(coord);
 	}	
-	
+
 	int getBlock(int x, int y, int z)
 	{
 		int cX = cast(int)floor(x / 16.0);
@@ -41,6 +48,12 @@ class Map
 	int getBlockRelative(coordinate c, int x, int y, int z)
 	{
 		return getBlock(x + c[0]*CHUNK_SIZE, y + c[1]*CHUNK_SIZE, z + c[2]*CHUNK_SIZE);
+	}
+
+	bool chunkExists(coordinate c)
+	{
+		Chunk* test = c in chunks;
+		return test != null;
 	}
 
 	Chunk getChunkVal(int x, int y, int z)

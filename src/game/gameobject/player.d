@@ -1,5 +1,4 @@
 module player;
-
 import std.stdio;
 
 import gl3n.linalg;
@@ -40,6 +39,7 @@ class Player : GameObject, IRenderable, IPhysical
 
 	Transform lastTrans;
 	bool jumped = false;
+	bool pressed = false;
 
     public override void Update(ref Map map)
     {
@@ -84,6 +84,13 @@ class Player : GameObject, IRenderable, IPhysical
 		else if(!InputStates.keySPACE)
 		{
 			jumped = false;
+		}
+
+		if(InputStates.keyQ && !pressed)
+		{
+			Chunk chunk = Chunk();
+			map.setChunk(chunk, 0,0,0);
+			pressed = true;
 		}
 
 		rotationX -= InputStates.mouseXRel * sensitivity;
