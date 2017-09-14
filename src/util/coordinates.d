@@ -101,6 +101,28 @@ struct CoordinateChunk
 	{
 		this(cast(int)floor(c.x/16.0f),cast(int)floor(c.y/16.0f),cast(int)floor(c.z/16.0f));
 	}
+	
+	/**
+	  * Binary Operations
+	 **/
+    public CoordinateChunk opBinary(string op)(CoordinateChunk r) if((op == "+") || (op == "-")) {
+		CoordinateChunk t;
+        mixin("t.x = x" ~ op ~ "r.x;");
+        mixin("t.y = y" ~ op ~ "r.y;");
+        mixin("t.z = z" ~ op ~ "r.z;");
+		return t;
+    }
+
+	/**
+	  * Assignment Operations
+	 **/
+
+    public CoordinateChunk opOpAssign(string op)(CoordinateChunk r) if((op == "+") || (op == "-")) {
+        mixin("x" ~ op ~ "= r.x;");
+        mixin("y" ~ op ~ "= r.y;");
+        mixin("z" ~ op ~ "= r.z;");
+		return this;
+    }
 }
 
 

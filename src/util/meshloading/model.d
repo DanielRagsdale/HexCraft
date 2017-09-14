@@ -7,8 +7,6 @@ import std.algorithm;
 
 import gl3n.linalg;
 
-alias vec3 = Vector!(float, 3);
-
 
 class Model
 {

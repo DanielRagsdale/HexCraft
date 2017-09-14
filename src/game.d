@@ -39,7 +39,6 @@ import util.coordinates;
 shared RenderMessage rMessage;
 
 Tid LogicThreadTid;
-Tid PhysicsThreadTid;
 
 /**
 * Prepares the game to be started.
@@ -52,7 +51,6 @@ void Start()
     rMessage = new shared RenderMessage();
 
     LogicThreadTid = spawn(&LogicThread, thisTid(), rMessage);
-    PhysicsThreadTid = spawn(&PhysicsThread, thisTid(), rMessage);
 
 	RenderInputLoop(rMessage);
 }
@@ -158,15 +156,6 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
         rMessage.SetData(worldMapModel.cm.values, dataArr); 
 		Thread.sleep( dur!("msecs")(1));  
     }
-}
-
-/**
-* Handles various physics interactions in the world
-*
-* Runs on Thread 2
-*/
-void PhysicsThread(Tid parentTid, shared(RenderMessage) rMessage)
-{
 }
 
 /**

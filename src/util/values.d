@@ -2,6 +2,8 @@ module util.values;
 
 import gl3n.linalg;
 
+import util.coordinates;
+
 immutable double INPUT_DT = 1.0 / 60.0;
 immutable double PHYSICS_DT = 1.0 / 20.0;
 
@@ -21,6 +23,17 @@ immutable vec3[] hex_dn = [
 	 hex_dx,
 	 hex_dz,
 	-hex_dx + hex_dz
+];
+
+immutable crd_chunk[] chunk_dn = [
+	crd_chunk(-1,  0,  0),
+	crd_chunk( 0,  0, -1),
+	crd_chunk( 1,  0, -1),
+	crd_chunk( 1,  0,  0),
+	crd_chunk( 0,  0,  1),
+	crd_chunk(-1,  0,  1),
+	crd_chunk( 0,  1,  0),
+	crd_chunk( 0, -1,  0),
 ];
 
 immutable mat3 matrixToSquare = mat3(vec3(0.8660254,0,0.5), vec3(0, 1, 0), vec3(0,0,1));

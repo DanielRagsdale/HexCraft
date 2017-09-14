@@ -20,10 +20,13 @@ class Map
 	{
 		chunks[coord] = c;
 		
-		crd_chunk below = crd_chunk(coord.x, coord.y - 1, coord.z);	
-		if(chunkExists(below))
-		{
-			outdatedChunks.insert(below);
+		foreach(delta; chunk_dn)
+		{	
+			crd_chunk update = coord + delta;	
+			if(chunkExists(update))
+			{
+				outdatedChunks.insert(update);
+			}
 		}
 
 		outdatedChunks.insert(coord);
