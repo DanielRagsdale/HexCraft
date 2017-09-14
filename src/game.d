@@ -34,7 +34,7 @@ import mapModel;
 import generator;
 
 import util.values;
-import util.coordinates;
+import util.coordVectors;
 
 shared RenderMessage rMessage;
 
@@ -105,7 +105,7 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 		------------------------
 	*/
 
-    RegisterGameObject(new Player(Transform(vec3(0.0, 0.0, 0.0))));
+    RegisterGameObject(new Player(Transform(vec_square(0.0, 0.0, 0.0))));
 	
 	worldMap = new Map();
 	GenerateMap(worldMap);
@@ -206,7 +206,7 @@ class RenderMessage
 		//Render Map
 		foreach(shared ChunkModel cm; mHexData)
 		{
-			DrawRegion(cast(ChunkModel)cm, cast(crd_chunk)cm.loc);
+			DrawRegion(cast(ChunkModel)cm, cast(vec_chunk)cm.loc);
 		}
 
 		renderer.Render();

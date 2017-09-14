@@ -1,6 +1,6 @@
 import gl3n.linalg;
 
-import util.coordinates;
+import util.coordVectors;
 
 
 /**
@@ -8,11 +8,11 @@ import util.coordinates;
 */
 struct Transform
 {
-    public vec3 position;
+    public vec_square position;
     public quat rotation;
     public vec3 scale;
 
-	public vec3 velocity;
+	public vec_square velocity;
 
     alias get_comp!("position","x") x;
     alias get_comp!("position","y") y;
@@ -30,27 +30,27 @@ struct Transform
     * Create a Transform with the given position and default scale and rotation
     */
     //TODO Expand to allow more general creation
-    public this(vec3 pos)
+    public this(vec_square pos)
     {
 		this(pos, quat.identity, vec3(1,1,1));
     }
 
-	public this(vec3 pos, quat rot)
+	public this(vec_square pos, quat rot)
 	{
 		this(pos, rot, vec3(1,1,1));
 	}
 	
-	public this(vec3 pos, vec3 sc)
+	public this(vec_square pos, vec3 sc)
 	{
 		this(pos, quat.identity, sc);
 	}
 
-	public this(vec3 pos, quat rot, vec3 sc)
+	public this(vec_square pos, quat rot, vec3 sc)
 	{
         position = pos;
         rotation = rot;
         scale = sc; 
-		velocity = vec3(0,0,0);
+		velocity = vec_square(0,0,0);
 	}
 	
     public mat4 GetTransformMatrix()
@@ -98,7 +98,7 @@ struct Transform
 		return t;
     }
 
-    public Transform opBinary(string op)(vec3 r) if((op == "+") || (op == "-")) {
+    public Transform opBinary(string op)(vec_square r) if((op == "+") || (op == "-")) {
 		Transform t;
         mixin("t.position = position" ~ op ~ "r;");
 		t.rotation = rotation;
@@ -111,8 +111,8 @@ struct Transform
 	 **/
 
     public Transform opOpAssign(string op)(double r) if((op == "*") || (op == "/")) {
-        mixin("position" ~ op ~ "r;");
-        mixin("rotation" ~ op ~ "r;");
+        mixin("position" ~ op ~ "= r;");
+        mixin("rotation" ~ op ~ "= r;");
 		return this;
     }
 
@@ -122,7 +122,7 @@ struct Transform
 		return this;
     }
 
-    public Transform opOpAssign(string op)(vec3 r) if((op == "+") || (op == "-")) {
+    public Transform opOpAssign(string op)(vec_square r) if((op == "+") || (op == "-")) {
         mixin("position" ~ op ~ "= r;");
 		return this;
     }

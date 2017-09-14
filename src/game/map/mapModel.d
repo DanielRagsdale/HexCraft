@@ -5,7 +5,7 @@ import gl3n.linalg;
 
 import map;
 import util.values;
-import util.coordinates;
+import util.coordVectors;
 
 immutable vec3[] hexVertices = [
 	// top
@@ -29,14 +29,14 @@ class MapModel
 {
 	Map mWorldMap;
 
-	public ChunkModel[crd_chunk] cm;
+	public ChunkModel[vec_chunk] cm;
 
 	this(Map worldMap)
 	{
 		mWorldMap = worldMap;
 	}	
 	
-	ref ChunkModel getChunkModel(crd_chunk c)
+	ref ChunkModel getChunkModel(vec_chunk c)
 	{
 		return cm[c];	
 	}
@@ -50,7 +50,7 @@ class MapModel
 
 			didSomething = true;
 
-			crd_chunk c = mWorldMap.outdatedChunks.front();
+			vec_chunk c = mWorldMap.outdatedChunks.front();
 
 			ChunkModel* old = c in cm;
 			if(old !is null)
@@ -179,7 +179,7 @@ struct ChunkModel
 	GLfloat[2][] texCoords;
 	GLint[3][] indices;
 
-	crd_chunk loc;
+	vec_chunk loc;
 
 	uint chunkVersion;
 }

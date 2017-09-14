@@ -15,13 +15,13 @@ import map;
 import mapModel;
 
 import util.values;
-import util.coordinates;
+import util.coordVectors;
 
 Texture hexTex;
-HexMesh[crd_chunk] meshes;
-uint[crd_chunk] chunkVersions;
+HexMesh[vec_chunk] meshes;
+uint[vec_chunk] chunkVersions;
 
-void DrawRegion(ChunkModel cm, crd_chunk c)
+void DrawRegion(ChunkModel cm, vec_chunk c)
 {
 	if(hexTex is null)
 	{

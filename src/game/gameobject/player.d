@@ -18,6 +18,7 @@ import transform;
 import map;
 
 import util.values;
+import util.coordVectors;
 
 class Player : GameObject, IRenderable, IPhysical
 {
@@ -45,34 +46,34 @@ class Player : GameObject, IRenderable, IPhysical
     {
 		lastTrans = transform;
 
-        vec3 movement;
+        vec_square movement;
 	
 		transform.velocity.x = 0.0f;
 		transform.velocity.z = 0.0f;
 
         if(InputStates.keyW)
         {
-			movement = transform.rotation * vec3(0.0, 0.0, -1);
+			movement = vec_square(0.0, 0.0, -1) * transform.rotation;
 			movement.y = 0;
-			transform.velocity += movement.normalized() * SPEED_TRUE;
+			transform.velocity += movement * SPEED_TRUE;
         }
         if(InputStates.keyS)
         {
-			movement = transform.rotation * vec3(0.0, 0.0, 1);
+			movement = vec_square(0.0, 0.0, 1) * transform.rotation;
 			movement.y = 0;
-			transform.velocity += movement.normalized() * SPEED_TRUE;
+			transform.velocity += movement * SPEED_TRUE;
         }
         if(InputStates.keyA)
         {
-			movement = transform.rotation * vec3(-1, 0.0, 0.0);
+			movement = vec_square(-1, 0.0, 0.0) * transform.rotation;
 			movement.y = 0;
-			transform.velocity += movement.normalized() * SPEED_TRUE;
+			transform.velocity += movement * SPEED_TRUE;
         }
 		if(InputStates.keyD)
         {
-			movement = transform.rotation * vec3(1, 0.0, 0.0);
+			movement = vec_square(1, 0.0, 0.0) * transform.rotation;
 			movement.y = 0;
-			transform.velocity += movement.normalized() * SPEED_TRUE;
+			transform.velocity += movement * SPEED_TRUE;
         }
 
 		//TODO implement actual, not shitty jump mechanics 	
@@ -118,7 +119,7 @@ class Player : GameObject, IRenderable, IPhysical
 		vec3 dirVec = vec3(0,0,-1) * interpTrans.rotation;
 
 
-		cameraMatrix = mat4.look_at(interpTrans.position + vec3(0, 0.75, 0), interpTrans.position + vec3(0, 0.75, 0) + dirVec, vec3(0, 1, 0));
+		cameraMatrix = mat4.look_at(interpTrans.position.toVec3() + vec3(0, 0.75, 0), interpTrans.position.toVec3() + vec3(0, 0.75, 0) + dirVec, vec3(0, 1, 0));
 
 		byte[] serialized = *cast(byte[mat4.sizeof]*)(&cameraMatrix);
 		return RenderData(0, serialized);
