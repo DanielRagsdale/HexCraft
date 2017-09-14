@@ -10,6 +10,7 @@ import IPhysical;
 
 import util.values;
 import util.mathM;
+import util.coordinates;
 
 void TickPhysics(ref Map map)
 {
@@ -18,11 +19,11 @@ void TickPhysics(ref Map map)
 		obj.transform.velocity += PHYSICS_DT * vec3(0, -9.8, 0);
 		obj.transform.position += PHYSICS_DT * obj.transform.velocity;
 		
-		vec3 hexCoord = toHex(obj.transform.position);
-		if(map.getBlock(cast(int)round(hexCoord.x), cast(int)floor(hexCoord.y), cast(int)round(hexCoord.z)))
+		crd_square sqCoords = crd_square(obj.transform.x, obj.transform.y, obj.transform.z);
+		if(map.getBlock(cast(crd_block)sqCoords))
 		{
-			obj.transform.position.y = ceil(obj.transform.position.y) + 0.01;
-			obj.transform.velocity.y = 0.0f;
+			obj.transform.y = ceil(obj.transform.y) + 0.01;
+			obj.transform.vy = 0.0f;
 		}
 
 		//foreach(delta; hex_dn)

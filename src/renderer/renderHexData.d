@@ -15,12 +15,13 @@ import map;
 import mapModel;
 
 import util.values;
+import util.coordinates;
 
 Texture hexTex;
-HexMesh[coordinate] meshes;
-uint[coordinate] chunkVersions;
+HexMesh[crd_chunk] meshes;
+uint[crd_chunk] chunkVersions;
 
-void DrawRegion(ChunkModel cm, coordinate c)
+void DrawRegion(ChunkModel cm, crd_chunk c)
 {
 	if(hexTex is null)
 	{
@@ -49,8 +50,8 @@ void DrawRegion(ChunkModel cm, coordinate c)
 		chunkVersions[c] = cm.chunkVersion;
 	}
 
-	DrawSimpleChunk(meshes[c], mat4.identity().translate(c[0] * CHUNK_SIZE * hex_dx 
-				+ c[1] * CHUNK_SIZE * hex_dy + c[2] * CHUNK_SIZE * hex_dz));
+	DrawSimpleChunk(meshes[c], mat4.identity().translate(c.x * CHUNK_SIZE * hex_dx 
+				+ c.y * CHUNK_SIZE * hex_dy + c.z * CHUNK_SIZE * hex_dz));
 }
 
 /**

@@ -34,6 +34,7 @@ import mapModel;
 import generator;
 
 import util.values;
+import util.coordinates;
 
 shared RenderMessage rMessage;
 
@@ -213,11 +214,10 @@ class RenderMessage
 			renderObjectData.DrawFunctions[rd.RenderObjectID](cast(byte[])rd.Data);
 		}
 		
-		writeln("******************* Render cycle mark");		
 		//Render Map
 		foreach(shared ChunkModel cm; mHexData)
 		{
-			DrawRegion(cast(ChunkModel)cm, cast(coordinate)cm.loc);
+			DrawRegion(cast(ChunkModel)cm, cast(crd_chunk)cm.loc);
 		}
 
 		renderer.Render();

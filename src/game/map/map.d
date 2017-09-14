@@ -4,24 +4,23 @@ import std.math;
 import std.container.slist;
 
 import util.values;
-
-alias coordinate = Tuple!(int, int, int);
+import util.coordinates;
 
 class Map
 {
-	Chunk[coordinate] chunks; 
+	Chunk[crd_chunk] chunks; 
 
-	auto outdatedChunks = SList!coordinate();
+	auto outdatedChunks = SList!crd_chunk();
 	
 	void setChunk(ref Chunk c, int x, int y, int z)
 	{
-		setChunk(c, coordinate(x,y,z));
+		setChunk(c, crd_chunk(x,y,z));
 	}
-	void setChunk(ref Chunk c, coordinate coord)
+	void setChunk(ref Chunk c, crd_chunk coord)
 	{
 		chunks[coord] = c;
 		
-		coordinate below = coordinate(coord[0], coord[1] - 1, coord[2]);	
+		crd_chunk below = crd_chunk(coord.x, coord.y - 1, coord.z);	
 		if(chunkExists(below))
 		{
 			outdatedChunks.insert(below);
@@ -30,13 +29,18 @@ class Map
 		outdatedChunks.insert(coord);
 	}	
 
+	int getBlock(crd_block c)
+	{
+		return getBlock(c.x, c.y, c.z);
+	}
+
 	int getBlock(int x, int y, int z)
 	{
 		int cX = cast(int)floor(x / 16.0);
 		int cY = cast(int)floor(y / 16.0);
 		int cZ = cast(int)floor(z / 16.0);
 		
-		Chunk* test = coordinate(cX,cY,cZ) in chunks;
+		Chunk* test = crd_chunk(cX,cY,cZ) in chunks;
 		if(test is null)
 		{
 			return 0;
@@ -45,28 +49,23 @@ class Map
 		return test.hexes[x - cX*CHUNK_SIZE][y - cY*CHUNK_SIZE][z - cZ*CHUNK_SIZE];		
 	}
 
-	int getBlockRelative(coordinate c, int x, int y, int z)
+	int getBlockRelative(crd_chunk c, int x, int y, int z)
 	{
-		return getBlock(x + c[0]*CHUNK_SIZE, y + c[1]*CHUNK_SIZE, z + c[2]*CHUNK_SIZE);
+		return getBlock(x + c.x*CHUNK_SIZE, y + c.y*CHUNK_SIZE, z + c.z*CHUNK_SIZE);
 	}
 
-	bool chunkExists(coordinate c)
+	bool chunkExists(crd_chunk c)
 	{
 		Chunk* test = c in chunks;
 		return test != null;
 	}
 
-	Chunk getChunkVal(int x, int y, int z)
-	{
-		return chunks[coordinate(x,y,z)];
-	}
-
-	Chunk getChunkVal(coordinate c)
+	Chunk getChunkVal(crd_chunk c)
 	{
 		return chunks[c];
 	}
 	
-	ref Chunk getChunkRef(coordinate c)
+	ref Chunk getChunkRef(crd_chunk c)
 	{
 		Chunk* test = c in chunks;
 		if(test is null)
@@ -76,14 +75,14 @@ class Map
 		return chunks[c];
 	}
 
-	Chunk* getChunkPointer(int x, int y, int z)
+	Chunk* getChunkPointer(crd_chunk c)
 	{
-		Chunk* test = coordinate(x,y,z) in chunks;
+		Chunk* test = c in chunks;
 		if(test is null)
 		{
-			chunks[coordinate(x,y,z)] = Chunk();
+			chunks[c] = Chunk();
 		}
-		return &chunks[coordinate(x,y,z)];
+		return &chunks[c];
 	}
 }
 

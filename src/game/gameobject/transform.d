@@ -1,5 +1,7 @@
 import gl3n.linalg;
 
+import util.coordinates;
+
 
 /**
 * Struct that holds the position, rotation, and scale of a GameObject
