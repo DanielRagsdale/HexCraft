@@ -25,6 +25,22 @@ immutable vec3[] hexVertices = [
 	vec3(-0.288675,    -1.0f,  0.5f)
 ];
 
+immutable vec2[] texPos = [
+	vec2(0.0f, 0.0f),
+	vec2(16f/512f, 0.0f),
+	vec2(0.0f, 32f/512f),
+	vec2(16f/512f, 32f/512f),
+
+
+	vec2(0.0f, 0.5f) * 16f/512f,
+	vec2(0.25, 0.066987f) * 16f/512f,
+	vec2(0.75, 0.066987f) * 16f/512f,
+
+	vec2(1.0f, 0.5f) * 16f/512f,
+	vec2(0.75f, 0.93301f) * 16f/512f,
+	vec2(0.25f, 0.93301f) * 16f/512f
+];
+
 class MapModel
 {
 	Map mWorldMap;
@@ -133,12 +149,15 @@ class MapModel
 	{
 		int offset = cast(int)model.positions.length;
 
+		vec2 texOff = vec2((16*texNum)/512f, 0.5f);
 		foreach(i; 0..6)
 		{
 			vec3 temp = (hexVertices[i] + x*hex_dx + y*hex_dy + z*hex_dz);
 			model.positions ~= [temp.x, temp.y, temp.z];
+			
+			model.texCoords ~= [(texPos[i+4] + texOff).x, (texPos[i+4] + texOff).y];
 		}
-		model.texCoords ~= [[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f],[0.3f, 0.3f]];
+		
 		model.indices ~= [[offset+0,offset+5,offset+1],[offset+1,offset+5,offset+4],
 				[offset+1,offset+4,offset+2],[offset+2,offset+4,offset+3]];
 	}
@@ -146,12 +165,14 @@ class MapModel
 	{
 		int offset = cast(int)model.positions.length;
 
+		vec2 texOff = vec2((16*texNum)/512f, 0.5f);
 		foreach(i; 6..12)
 		{
 			vec3 temp = (hexVertices[i] + x*hex_dx + y*hex_dy + z*hex_dz);
 			model.positions ~= [temp.x, temp.y, temp.z];
+			
+			model.texCoords ~= [(texPos[i-2] + texOff).x, (texPos[i-2] + texOff).y];
 		}
-		model.texCoords ~= [[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f],[0.0f, 0.0f]];
 
 		model.indices ~= [[offset+0,offset+1,offset+5],[offset+1,offset+4,offset+5],
 				[offset+1,offset+2,offset+4],[offset+2,offset+3,offset+4]];
@@ -161,13 +182,15 @@ class MapModel
 	{
 		int offset = cast(int)model.positions.length;
 
-		foreach(i; [side+0,(side+1)%6,side+6,(side+1)%6+6])
+		vec2 texOff = vec2((16*texNum)/512f, 0.0f);
+
+		foreach(i, j; [side+0,(side+1)%6,side+6,(side+1)%6+6])
 		{
-			vec3 temp = (hexVertices[i] + x*hex_dx + y*hex_dy + z*hex_dz);
+			vec3 temp = (hexVertices[j] + x*hex_dx + y*hex_dy + z*hex_dz);
 			model.positions ~= [temp.x, temp.y, temp.z];
+
+			model.texCoords ~= [(texPos[i] + texOff).x, (texPos[i] + texOff).y];
 		}
-		model.texCoords ~= [[(16*texNum)/512f, 0.0f],[(16*texNum+16)/512f, 0.0f],
-					[(16*texNum)/512f, 32f/512f],[(16*texNum+16)/512f, 32f/512f]];
 
 		model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 	}
