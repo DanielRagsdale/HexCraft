@@ -123,8 +123,16 @@ class Player : GameObject, IRenderable, IPhysical
 
 				if(block)
 				{
-					map.setBlock(blockPos, ++block);
-					break;
+					if(InputStates.keyQ)
+					{
+						map.setBlock(blockPos, ++block);
+						break;
+					}
+					else
+					{
+						map.setBlock(cast(vec_block)(transform.position + vec_square(0,1.5,0) + looking * (i-1)), 1);
+						break;
+					}
 				}
 			}
 
