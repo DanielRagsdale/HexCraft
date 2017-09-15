@@ -46,7 +46,7 @@ Tid LogicThreadTid;
 */
 void Start()
 {
-    CreateDisplay(1680, 1050, "Aurora");
+    CreateDisplay(1280, 720, "Aurora");
 
     rMessage = new shared RenderMessage();
 

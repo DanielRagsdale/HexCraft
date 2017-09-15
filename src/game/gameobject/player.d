@@ -40,7 +40,8 @@ class Player : GameObject, IRenderable, IPhysical
 
 	Transform lastTrans;
 	bool jumped = false;
-	bool pressed = false;
+	bool lPressed = false;
+	bool rPressed = false;
 
     public override void Update(ref Map map)
     {
@@ -87,11 +88,51 @@ class Player : GameObject, IRenderable, IPhysical
 			jumped = false;
 		}
 
-		if(InputStates.keyQ && !pressed)
+		if(InputStates.mouseLEFT && !lPressed)
 		{
-			Chunk chunk = Chunk();
-			map.setChunk(chunk, 0,0,0);
-			pressed = true;
+			//Stupid raycast
+			vec_square looking = vec_square(0.0, 0.0, -0.1) * transform.rotation;
+			
+			for(int i = 0; i < 60; i++)
+			{
+				vec_block blockPos = cast(vec_block)(transform.position + vec_square(0,1.5,0) + looking * i);
+				ushort block = map.getBlock(blockPos);
+
+				if(block)
+				{
+					map.setBlock(blockPos, 0);
+					break;
+				}
+			}
+
+			lPressed = true;
+		}
+		else if(!InputStates.mouseLEFT)
+		{
+			lPressed = false;
+		}
+		if(InputStates.mouseRIGHT && !rPressed)
+		{
+			//Stupid raycast
+			vec_square looking = vec_square(0.0, 0.0, -0.1) * transform.rotation;
+			
+			for(int i = 0; i < 60; i++)
+			{
+				vec_block blockPos = cast(vec_block)(transform.position + vec_square(0,1.5,0) + looking * i);
+				ushort block = map.getBlock(blockPos);
+
+				if(block)
+				{
+					map.setBlock(blockPos, ++block);
+					break;
+				}
+			}
+
+			rPressed = true;
+		}
+		else if(!InputStates.mouseRIGHT)
+		{
+			rPressed = false;
 		}
 
 		rotationX -= InputStates.mouseXRel * sensitivity;

@@ -156,6 +156,27 @@ struct VectorBlock
 	{
 		this(c.x*CHUNK_SIZE, c.y*CHUNK_SIZE, c.z*CHUNK_SIZE);
 	}
+	
+	/**
+	  * Binary Operations
+	 **/
+    public VectorBlock opBinary(string op)(VectorBlock r) if((op == "+") || (op == "-")) {
+		VectorBlock t;
+        mixin("t.x = x" ~ op ~ "r.x;");
+        mixin("t.y = y" ~ op ~ "r.y;");
+        mixin("t.z = z" ~ op ~ "r.z;");
+		return t;
+    }
+
+	/**
+	  * Assignment Operations
+	 **/
+    public VectorBlock opOpAssign(string op)(VectorBlock r) if((op == "+") || (op == "-")) {
+        mixin("x" ~ op ~ "= r.x;");
+        mixin("y" ~ op ~ "= r.y;");
+        mixin("z" ~ op ~ "= r.z;");
+		return this;
+	}
 }
 
 struct VectorChunk

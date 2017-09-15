@@ -60,13 +60,13 @@ class MapModel
 	bool RefreshChunks()
 	{
 		bool didSomething = false;
-		while(!mWorldMap.outdatedChunks.empty())
+		while(mWorldMap.outdatedChunks.length > 0)
 		{
 			uint chunkVersion = 0;
 
 			didSomething = true;
 
-			vec_chunk c = mWorldMap.outdatedChunks.front();
+			vec_chunk c = mWorldMap.outdatedChunks.keys[0];
 
 			ChunkModel* old = c in cm;
 			if(old !is null)
@@ -139,7 +139,7 @@ class MapModel
 
 			cm[c] = model;
 
-			mWorldMap.outdatedChunks.removeFront();
+			mWorldMap.outdatedChunks.remove(c);
 		}
 
 		return didSomething;

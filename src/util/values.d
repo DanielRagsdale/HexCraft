@@ -25,6 +25,17 @@ immutable vec3[] hex_dn = [
 	-hex_dx + hex_dz
 ];
 
+immutable vec_block[] block_dn = [
+	vec_block(-1,  0,  0),
+	vec_block( 0,  0, -1),
+	vec_block( 1,  0, -1),
+	vec_block( 1,  0,  0),
+	vec_block( 0,  0,  1),
+	vec_block(-1,  0,  1),
+	vec_block( 0,  1,  0),
+	vec_block( 0, -1,  0),
+];
+
 immutable vec_chunk[] chunk_dn = [
 	vec_chunk(-1,  0,  0),
 	vec_chunk( 0,  0, -1),

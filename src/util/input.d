@@ -182,6 +182,34 @@ void PollSDLEvents()
 
                 InputStates.mouseY = event.motion.y;
             }
+			else if(event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				switch(event.button.button)
+				{
+					case SDL_BUTTON_LEFT:
+						InputStates.mouseLEFT = true;
+						break;
+					case SDL_BUTTON_RIGHT:
+						InputStates.mouseRIGHT = true;
+						break;
+					default:
+						break;
+				}
+			}
+			else if(event.type == SDL_MOUSEBUTTONUP)
+			{
+				switch(event.button.button)
+				{
+					case SDL_BUTTON_LEFT:
+						InputStates.mouseLEFT = false;
+						break;
+					case SDL_BUTTON_RIGHT:
+						InputStates.mouseRIGHT = false;
+						break;
+					default:
+						break;
+				}
+			}
         }while(SDL_PollEvent(&event));
 
             //SDL_WarpMouseInWindow(disp.m_window, disp.halfWidth, disp.halfHeight);
@@ -245,4 +273,7 @@ struct InputStates
 
     public static shared uint mouseX;
     public static shared uint mouseY;
+
+	public static shared bool mouseLEFT;
+	public static shared bool mouseRIGHT;
 }
