@@ -18,7 +18,7 @@ void GenerateMap(Map map)
 	{
 		if(y<=(x / (i+3)))
 		{
-			chunk.hexes[x][y][z] = cast(ushort) (x*y + z) % 8 + 1;
+			chunk.hexes[x][y][z] = cast(ushort) (x*y + z) % 3 + 1;
 		}
 		if(x*y*z >= abs(256 * j))
 		{
@@ -50,9 +50,13 @@ void GenerateMap(Map map)
 		{
 			chunk.hexes[x][y][z] = 3;
 		}
-		else
+		else if (y > 8) 
 		{
 			chunk.hexes[x][y][z] = 2;
+		}
+		else
+		{
+			chunk.hexes[x][y][z] = 1;
 		}
 	}
 	}
