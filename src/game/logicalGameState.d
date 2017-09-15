@@ -3,13 +3,15 @@ import std.stdio;
 import gameObject;
 import map;
 
+import renderObjectData;
+
 /**
 * Stores the information about the game state.
 * Information is then extracted and sent to the rendering thread
 */
 enum IterableObjectTypes
 {
-	RENDERABLE, COLLIDABLE, PHYSICAL, END
+	COLLIDABLE, PHYSICAL, END
 }
 
 /**
@@ -21,6 +23,8 @@ public GameObject[] gameObjects;
 * Multidimensional array mapping IterableObjectTypes to an array of GameObject that belong within that group
 */
 public GameObject[ulong][IterableObjectTypes] objectGroups;
+
+public RenderData delegate(double tickOffset)[] renderFunctions;
 
 private uint gameObjectIDCounter = 0;
 
@@ -44,6 +48,11 @@ public ulong RegisterGameObject(GameObject gameObject)
 public void AddObjectToIterable(GameObject go, IterableObjectTypes type)
 {
 	objectGroups[type][go.GetID] = go;
+}
+
+public void AddFunctionToRender(RenderData delegate(double tickOffset) func)
+{
+	renderFunctions ~= func;
 }
 
 /**

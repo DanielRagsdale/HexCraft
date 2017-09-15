@@ -33,6 +33,8 @@ public void CreateDisplay(int width, int height, const(char)* title)
     glFrontFace(GL_CCW);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+
+	glEnable(GL_ALPHA);
 }
 
 public void Render ()

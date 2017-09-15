@@ -7,7 +7,6 @@ import util.input;
 
 import logicalGameState;
 
-import IRenderable;
 import IPhysical;
 
 import renderObjectData;
@@ -20,7 +19,7 @@ import map;
 import util.values;
 import util.coordVectors;
 
-class Player : GameObject, IRenderable, IPhysical
+class Player : GameObject, IPhysical
 {
 	quat originalRot;
 	float rotationX = 0.0f;
@@ -30,8 +29,11 @@ class Player : GameObject, IRenderable, IPhysical
 	{
 		super(trans);
 
-        AddObjectToIterable(this, IterableObjectTypes.RENDERABLE);
         AddObjectToIterable(this, IterableObjectTypes.PHYSICAL);
+		
+		AddFunctionToRender(&RenderCamera);
+		AddFunctionToRender(&RenderGUI);
+
 		originalRot = transform.rotation;
 	}
 
@@ -128,6 +130,11 @@ class Player : GameObject, IRenderable, IPhysical
 						map.setBlock(blockPos, ++block);
 						break;
 					}
+					else if(InputStates.keyE)
+					{
+						map.setBlock(blockPos, --block);
+						break;
+					}
 					else
 					{
 						map.setBlock(cast(vec_block)(transform.position + vec_square(0,1.5,0) + looking * (i-1)), 1);
@@ -159,8 +166,13 @@ class Player : GameObject, IRenderable, IPhysical
 	}
 
 	mat4 cameraMatrix = mat4.identity();
+	
+	public RenderData RenderGUI(double tickOffset)
+	{
+		return RenderData(-1, []);
+	}
 
-	public override RenderData Render(double tickOffset)
+	public RenderData RenderCamera(double tickOffset)
 	{
 		Transform interpTrans = transform;
 		interpTrans += (transform - lastTrans) * (tickOffset / PHYSICS_DT);

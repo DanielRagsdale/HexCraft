@@ -31,6 +31,9 @@ void PollSDLEvents()
                     case SDLK_d:
                         InputStates.keyD = true;
                         break;
+                    case SDLK_e:
+                        InputStates.keyE = true;
+                        break;
                     case SDLK_s:
                         InputStates.keyS = true;
                         break;
@@ -105,6 +108,9 @@ void PollSDLEvents()
                         break;
                     case SDLK_d:
                         InputStates.keyD = false;
+                        break;
+                    case SDLK_e:
+                        InputStates.keyE = false;
                         break;
                     case SDLK_s:
                         InputStates.keyS = false;
@@ -226,7 +232,7 @@ struct InputStates
 //    public static shared bool keyB;
 //    public static shared bool keyC;
     public static shared bool keyD;
-//    public static shared bool keyE;
+    public static shared bool keyE;
 //    public static shared bool keyF;
 //    public static shared bool keyG;
 //    public static shared bool keyH;

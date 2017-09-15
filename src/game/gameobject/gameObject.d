@@ -6,8 +6,6 @@ import transform;
 
 import map;
 
-import IRenderable;
-
 /**
 * Class representing a GameObject which exists in the scene
 */

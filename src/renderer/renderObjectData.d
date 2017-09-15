@@ -183,7 +183,7 @@ void DrawSimpleMesh(Mesh mesh, mat4 transformMatrix)
 */
 struct RenderData
 {
-	public uint RenderObjectID;
+	public int RenderObjectID;
 	public byte[] Data;
 	
 	this(uint ID, byte[] data)

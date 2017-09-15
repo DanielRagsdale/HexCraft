@@ -8,5 +8,9 @@ out vec4 outColor;
 
 void main()
 {
-    outColor = texture(sampler, texCoord1);
+	vec4 texColor = texture(sampler, texCoord1);
+    if(texColor.a < 0.1)
+        discard;
+
+    outColor = texColor;
 }

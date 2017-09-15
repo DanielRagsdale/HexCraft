@@ -13,10 +13,9 @@ import util.input;
 
 import core.time;
 import core.thread;
+import core.atomic;
 
 import gl3n.linalg;
-
-import IRenderable;
 
 import renderer;
 import display;
@@ -165,9 +164,15 @@ RenderData[] ExtractRenderObjects(double tickOffset)
 {
 	RenderData[] rd;
 
-	foreach(ulong i, GameObject renderableObj; objectGroups[IterableObjectTypes.RENDERABLE])
+	//foreach(GameObject renderableObj; objectGroups[IterableObjectTypes.RENDERABLE])
+
+	foreach(RenderData delegate(double to) func; renderFunctions)
 	{
-		rd ~= (cast(IRenderable)renderableObj).Render(tickOffset);
+		RenderData data = func(tickOffset);
+		if(data.RenderObjectID >= 0)
+		{
+			rd ~= func(tickOffset);
+		}
 	}
 
 	return rd;
@@ -181,13 +186,17 @@ class RenderMessage
 	private shared (ChunkModel)[] mHexData;
 	private shared (RenderData)[] mObjectData;
 
+	private shared bool hasNewData = false;
+
 	/**
 	* Set the data that is going to be rendered the next time the rendering loop executes.
 	*/
 	public shared void SetData(ChunkModel[] hexData, RenderData[] objectData)
 	{
-		mHexData = cast(shared)hexData;
-		mObjectData = cast(shared)objectData;
+		mHexData.atomicStore(cast(shared)hexData);
+		mObjectData.atomicStore(cast(shared)objectData);
+
+		hasNewData.atomicStore(true);
 	}
 	
 	/**
@@ -210,10 +219,12 @@ class RenderMessage
 		}
 
 		renderer.Render();
+
+		hasNewData.atomicStore(false);
 	}
 
 	public shared bool Ready()
 	{
-		return true;
+		return hasNewData;
 	}
 }
