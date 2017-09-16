@@ -1,277 +1,297 @@
 module util.input;
 
+import core.atomic;
+
 import derelict.sdl2.sdl;
 
 import std.stdio;
 import game;
 import renderer;
 
+public shared bool ShouldQuit;
+
+shared SDL_Event[] rawEvents;
+
 void PollSDLEvents()
 {
+	//SDL_Event[] tempEvents;
+
     SDL_Event event;
+    while(SDL_PollEvent(&event))
+    {
+    	if(event.type == SDL_QUIT)
+    	{
+    	ShouldQuit = true;
+    	}
+		else
+		{
+			rawEvents ~= event;
+		}
+	}
+
+	//rawEvents.atomicStore(cast(shared)tempEvents);
+}
+
+void UpdateInput()
+{
+	//SDL_Event[] localEvents;	
+	//localEvents.atomicStore(cast(SDL_Event[])rawEvents);
+	//localEvents = cast(SDL_Event[])rawEvents;
 
     InputStates.mouseXRel = 0;
     InputStates.mouseYRel = 0;
 
-    if(SDL_PollEvent(&event))
-    {
-        do
+	foreach(event; rawEvents)
+	{
+        if(event.type == SDL_KEYDOWN)
         {
-            if(event.type == SDL_QUIT)
+            switch(event.key.keysym.sym)
             {
-                InputStates.shouldQuit = true;
+                case SDLK_a:
+                    InputStates.keyA.atomicOp!"+="(1);
+                    break;
+                case SDLK_d:
+                    InputStates.keyD.atomicOp!"+="(1);
+                    break;
+                case SDLK_e:
+                    InputStates.keyE.atomicOp!"+="(1);
+                    break;
+                case SDLK_s:
+                    InputStates.keyS.atomicOp!"+="(1);
+                    break;
+                case SDLK_q:
+                    InputStates.keyQ.atomicOp!"+="(1);
+                    break;
+                case SDLK_w:
+                    InputStates.keyW.atomicOp!"+="(1);
+                    break;
+                case SDLK_z:
+                    InputStates.keyZ.atomicOp!"+="(1);
+                    break;
+
+                case SDLK_0:
+                    InputStates.key0.atomicOp!"+="(1);
+                    break;
+                case SDLK_1:
+                    InputStates.key1.atomicOp!"+="(1);
+                    break;
+                case SDLK_2:
+                    InputStates.key2.atomicOp!"+="(1);
+                    break;
+                case SDLK_3:
+                    InputStates.key3.atomicOp!"+="(1);
+                    break;
+                case SDLK_4:
+                    InputStates.key4.atomicOp!"+="(1);
+                    break;
+                case SDLK_5:
+                    InputStates.key5.atomicOp!"+="(1);
+                    break;
+                case SDLK_6:
+                    InputStates.key6.atomicOp!"+="(1);
+                    break;
+                case SDLK_7:
+                    InputStates.key7.atomicOp!"+="(1);
+                    break;
+                case SDLK_8:
+                    InputStates.key8.atomicOp!"+="(1);
+                    break;
+                case SDLK_9:
+                    InputStates.key9.atomicOp!"+="(1);
+                    break;
+
+                case SDLK_SPACE:
+                    InputStates.keySPACE.atomicOp!"+="(1);
+                    break;
+
+                case SDLK_LEFT:
+                    InputStates.keyLEFT.atomicOp!"+="(1);
+                    break;
+                case SDLK_RIGHT:
+                    InputStates.keyRIGHT.atomicOp!"+="(1);
+                    break;
+                case SDLK_UP:
+                    InputStates.keyUP.atomicOp!"+="(1);
+                    break;
+                case SDLK_DOWN:
+                    InputStates.keyDOWN.atomicOp!"+="(1);
+                    break;
+
+                default:
+                    break;
             }
-            else if(event.type == SDL_KEYDOWN)
+        }
+        else if(event.type == SDL_KEYUP)
+        {
+            switch(event.key.keysym.sym)
             {
-                switch(event.key.keysym.sym)
-                {
-                    case SDLK_a:
-                        InputStates.keyA = true;
-                        break;
-                    case SDLK_d:
-                        InputStates.keyD = true;
-                        break;
-                    case SDLK_e:
-                        InputStates.keyE = true;
-                        break;
-                    case SDLK_s:
-                        InputStates.keyS = true;
-                        break;
-                    case SDLK_q:
-                        InputStates.keyQ = true;
-                        break;
-                    case SDLK_w:
-                        InputStates.keyW = true;
-                        break;
-                    case SDLK_z:
-                        InputStates.keyZ = true;
-                        break;
+                case SDLK_a:
+                    InputStates.keyA = 0;
+                    break;
+                case SDLK_d:
+                    InputStates.keyD = 0;
+                    break;
+                case SDLK_e:
+                    InputStates.keyE = 0;
+                    break;
+                case SDLK_s:
+                    InputStates.keyS = 0;
+                    break;
+                case SDLK_q:
+                    InputStates.keyQ = 0;
+                    break;
+                case SDLK_w:
+                    InputStates.keyW = 0;
+                    break;
+                case SDLK_z:
+                    InputStates.keyZ = 0;
+                    break;
 
-                    case SDLK_0:
-                        InputStates.key0 = true;
-                        break;
-                    case SDLK_1:
-                        InputStates.key1 = true;
-                        break;
-                    case SDLK_2:
-                        InputStates.key2 = true;
-                        break;
-                    case SDLK_3:
-                        InputStates.key3 = true;
-                        break;
-                    case SDLK_4:
-                        InputStates.key4 = true;
-                        break;
-                    case SDLK_5:
-                        InputStates.key5 = true;
-                        break;
-                    case SDLK_6:
-                        InputStates.key6 = true;
-                        break;
-                    case SDLK_7:
-                        InputStates.key7 = true;
-                        break;
-                    case SDLK_8:
-                        InputStates.key8 = true;
-                        break;
-                    case SDLK_9:
-                        InputStates.key9 = true;
-                        break;
+                case SDLK_0:
+                    InputStates.key0 = 0;
+                    break;
+                case SDLK_1:
+                    InputStates.key1 = 0;
+                    break;
+                case SDLK_2:
+                    InputStates.key2 = 0;
+                    break;
+                case SDLK_3:
+                    InputStates.key3 = 0;
+                    break;
+                case SDLK_4:
+                    InputStates.key4 = 0;
+                    break;
+                case SDLK_5:
+                    InputStates.key5 = 0;
+                    break;
+                case SDLK_6:
+                    InputStates.key6 = 0;
+                    break;
+                case SDLK_7:
+                    InputStates.key7 = 0;
+                    break;
+                case SDLK_8:
+                    InputStates.key8 = 0;
+                    break;
+                case SDLK_9:
+                    InputStates.key9 = 0;
+                    break;
 
-                    case SDLK_SPACE:
-                        InputStates.keySPACE = true;
-                        break;
+                case SDLK_SPACE:
+                    InputStates.keySPACE = 0;
+                    break;
 
-                    case SDLK_LEFT:
-                        InputStates.keyLEFT = true;
-                        break;
-                    case SDLK_RIGHT:
-                        InputStates.keyRIGHT = true;
-                        break;
-                    case SDLK_UP:
-                        InputStates.keyUP = true;
-                        break;
-                    case SDLK_DOWN:
-                        InputStates.keyDOWN = true;
-                        break;
+                case SDLK_LEFT:
+                    InputStates.keyLEFT = 0;
+                    break;
+                case SDLK_RIGHT:
+                    InputStates.keyRIGHT = 0;
+                    break;
+                case SDLK_UP:
+                    InputStates.keyUP = 0;
+                    break;
+                case SDLK_DOWN:
+                    InputStates.keyDOWN = 0;
+                    break;
 
-                    default:
-                        break;
-                }
+                default:
+                    break;
             }
-            else if(event.type == SDL_KEYUP)
-            {
-                switch(event.key.keysym.sym)
-                {
-                    case SDLK_a:
-                        InputStates.keyA = false;
-                        break;
-                    case SDLK_d:
-                        InputStates.keyD = false;
-                        break;
-                    case SDLK_e:
-                        InputStates.keyE = false;
-                        break;
-                    case SDLK_s:
-                        InputStates.keyS = false;
-                        break;
-                    case SDLK_q:
-                        InputStates.keyQ = false;
-                        break;
-                    case SDLK_w:
-                        InputStates.keyW = false;
-                        break;
-                    case SDLK_z:
-                        InputStates.keyZ = false;
-                        break;
+        }
+        else if(event.type == SDL_MOUSEMOTION)
+        {
+            InputStates.mouseXRel = event.motion.xrel;
+            InputStates.mouseYRel = event.motion.yrel;
 
-                    case SDLK_0:
-                        InputStates.key0 = false;
-                        break;
-                    case SDLK_1:
-                        InputStates.key1 = false;
-                        break;
-                    case SDLK_2:
-                        InputStates.key2 = false;
-                        break;
-                    case SDLK_3:
-                        InputStates.key3 = false;
-                        break;
-                    case SDLK_4:
-                        InputStates.key4 = false;
-                        break;
-                    case SDLK_5:
-                        InputStates.key5 = false;
-                        break;
-                    case SDLK_6:
-                        InputStates.key6 = false;
-                        break;
-                    case SDLK_7:
-                        InputStates.key7 = false;
-                        break;
-                    case SDLK_8:
-                        InputStates.key8 = false;
-                        break;
-                    case SDLK_9:
-                        InputStates.key9 = false;
-                        break;
+//            writeln(event.motion.x, "   ", event.motion.y);
 
-                    case SDLK_SPACE:
-                        InputStates.keySPACE = false;
-                        break;
+            InputStates.mouseX = event.motion.x;
 
-                    case SDLK_LEFT:
-                        InputStates.keyLEFT = false;
-                        break;
-                    case SDLK_RIGHT:
-                        InputStates.keyRIGHT = false;
-                        break;
-                    case SDLK_UP:
-                        InputStates.keyUP = false;
-                        break;
-                    case SDLK_DOWN:
-                        InputStates.keyDOWN = false;
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-            else if(event.type == SDL_MOUSEMOTION)
-            {
-                InputStates.mouseXRel = event.motion.xrel;
-                InputStates.mouseYRel = event.motion.yrel;
-
-//                writeln(event.motion.x, "   ", event.motion.y);
-
-                InputStates.mouseX = event.motion.x;
-
-                InputStates.mouseY = event.motion.y;
-            }
-			else if(event.type == SDL_MOUSEBUTTONDOWN)
+            InputStates.mouseY = event.motion.y;
+        }
+		else if(event.type == SDL_MOUSEBUTTONDOWN)
+		{
+			switch(event.button.button)
 			{
-				switch(event.button.button)
-				{
-					case SDL_BUTTON_LEFT:
-						InputStates.mouseLEFT = true;
-						break;
-					case SDL_BUTTON_RIGHT:
-						InputStates.mouseRIGHT = true;
-						break;
-					default:
-						break;
-				}
+				case SDL_BUTTON_LEFT:
+					InputStates.mouseLEFT.atomicOp!"+="(1);
+					break;
+				case SDL_BUTTON_RIGHT:
+					InputStates.mouseRIGHT.atomicOp!"+="(1);
+					break;
+				default:
+					break;
 			}
-			else if(event.type == SDL_MOUSEBUTTONUP)
+		}
+		else if(event.type == SDL_MOUSEBUTTONUP)
+		{
+			switch(event.button.button)
 			{
-				switch(event.button.button)
-				{
-					case SDL_BUTTON_LEFT:
-						InputStates.mouseLEFT = false;
-						break;
-					case SDL_BUTTON_RIGHT:
-						InputStates.mouseRIGHT = false;
-						break;
-					default:
-						break;
-				}
+				case SDL_BUTTON_LEFT:
+					InputStates.mouseLEFT = 0;
+					break;
+				case SDL_BUTTON_RIGHT:
+					InputStates.mouseRIGHT = 0;
+					break;
+				default:
+					break;
 			}
-        }while(SDL_PollEvent(&event));
+		}
+	}
+	rawEvents = [];
 
-            //SDL_WarpMouseInWindow(disp.m_window, disp.halfWidth, disp.halfHeight);
-    }
 }
-
 
 struct InputStates
 {
-	public static shared bool shouldQuit;
+	public static shared int shouldQuit;
 
 
-    public static shared bool keyA;
-//    public static shared bool keyB;
-//    public static shared bool keyC;
-    public static shared bool keyD;
-    public static shared bool keyE;
-//    public static shared bool keyF;
-//    public static shared bool keyG;
-//    public static shared bool keyH;
-//    public static shared bool keyI;
-//    public static shared bool keyK;
-//    public static shared bool keyL;
-//    public static shared bool keyM;
-//    public static shared bool keyN;
-//    public static shared bool keyO;
-//    public static shared bool keyP;
-    public static shared bool keyQ;
-//    public static shared bool keyR;
-    public static shared bool keyS;
-//    public static shared bool keyT;
-//    public static shared bool keyU;
-//    public static shared bool keyV;
-    public static shared bool keyW;
-//    public static shared bool keyX;
-//    public static shared bool keyY;
-    public static shared bool keyZ;
+    public static shared int keyA;
+//    public static shared int keyB;
+//    public static shared int keyC;
+    public static shared int keyD;
+    public static shared int keyE;
+//    public static shared int keyF;
+//    public static shared int keyG;
+//    public static shared int keyH;
+//    public static shared int keyI;
+//    public static shared int keyK;
+//    public static shared int keyL;
+//    public static shared int keyM;
+//    public static shared int keyN;
+//    public static shared int keyO;
+//    public static shared int keyP;
+    public static shared int keyQ;
+//    public static shared int keyR;
+    public static shared int keyS;
+//    public static shared int keyT;
+//    public static shared int keyU;
+//    public static shared int keyV
+    public static shared int keyW;
+//    public static shared int keyX;
+//    public static shared int keyY;
+    public static shared int keyZ;
 
 
-    public static shared bool key0;
-    public static shared bool key1;
-    public static shared bool key2;
-    public static shared bool key3;
-    public static shared bool key4;
-    public static shared bool key5;
-    public static shared bool key6;
-    public static shared bool key7;
-    public static shared bool key8;
-    public static shared bool key9;
+    public static shared int key0;
+    public static shared int key1;
+    public static shared int key2;
+    public static shared int key3;
+    public static shared int key4;
+    public static shared int key5;
+    public static shared int key6;
+    public static shared int key7;
+    public static shared int key8;
+    public static shared int key9;
 
-    public static shared bool keySPACE;
+    public static shared int keySPACE;
 
-    public static shared bool keyLEFT;
-    public static shared bool keyRIGHT;
-    public static shared bool keyUP;
-    public static shared bool keyDOWN;
+    public static shared int keyLEFT;
+    public static shared int keyRIGHT;
+    public static shared int keyUP;
+    public static shared int keyDOWN;
 
 
     public static shared int mouseXRel;
@@ -280,6 +300,6 @@ struct InputStates
     public static shared uint mouseX;
     public static shared uint mouseY;
 
-	public static shared bool mouseLEFT;
-	public static shared bool mouseRIGHT;
+	public static shared int mouseLEFT;
+	public static shared int mouseRIGHT;
 }

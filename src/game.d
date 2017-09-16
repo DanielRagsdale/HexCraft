@@ -66,7 +66,7 @@ void RenderInputLoop(shared(RenderMessage) rMessage)
     double time0 = CurrentTime();
     double accumulator = 0.0;
 
-    while(!InputStates.shouldQuit)
+    while(!ShouldQuit)
     {
         double time1 = CurrentTime();
         double frameTime = time1 - time0;
@@ -123,7 +123,7 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 
 	double lastFrameTime;
 
-    while(!InputStates.shouldQuit)
+    while(!ShouldQuit)
     {
         double time1 = CurrentTime();
         double frameTime = time1 - time0;
@@ -134,6 +134,8 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
         //Constant framerate game logic and physics ticks.
         while(accumulator >= PHYSICS_DT)
         {
+			UpdateInput();
+
 			Update(worldMap);
 			TickPhysics(worldMap);
 
@@ -225,6 +227,6 @@ class RenderMessage
 
 	public shared bool Ready()
 	{
-		return hasNewData;
+		return hasNewData || true;
 	}
 }

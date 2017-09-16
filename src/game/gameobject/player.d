@@ -32,7 +32,7 @@ class Player : GameObject, IPhysical
         AddObjectToIterable(this, IterableObjectTypes.PHYSICAL);
 		
 		AddFunctionToRender(&RenderCamera);
-		AddFunctionToRender(&RenderGUI);
+		AddFunctionToRender(&RenderHUD);
 
 		originalRot = transform.rotation;
 	}
@@ -41,9 +41,6 @@ class Player : GameObject, IPhysical
 	float sensitivity = 0.5f;
 
 	Transform lastTrans;
-	bool jumped = false;
-	bool lPressed = false;
-	bool rPressed = false;
 
     public override void Update(ref Map map)
     {
@@ -80,17 +77,12 @@ class Player : GameObject, IPhysical
         }
 
 		//TODO implement actual, not shitty jump mechanics 	
-		if(InputStates.keySPACE && !jumped)
+		if(InputStates.keySPACE == 1)
 		{
 			transform.velocity.y = 5.0f;
-			jumped = true;
-		}
-		else if(!InputStates.keySPACE)
-		{
-			jumped = false;
 		}
 
-		if(InputStates.mouseLEFT && !lPressed)
+		if(InputStates.mouseLEFT == 1)
 		{
 			//Stupid raycast
 			vec_square looking = vec_square(0.0, 0.0, -0.1) * transform.rotation;
@@ -106,14 +98,8 @@ class Player : GameObject, IPhysical
 					break;
 				}
 			}
-
-			lPressed = true;
 		}
-		else if(!InputStates.mouseLEFT)
-		{
-			lPressed = false;
-		}
-		if(InputStates.mouseRIGHT && !rPressed)
+		if(InputStates.mouseRIGHT == 1)
 		{
 			//Stupid raycast
 			vec_square looking = vec_square(0.0, 0.0, -0.1) * transform.rotation;
@@ -142,12 +128,6 @@ class Player : GameObject, IPhysical
 					}
 				}
 			}
-
-			rPressed = true;
-		}
-		else if(!InputStates.mouseRIGHT)
-		{
-			rPressed = false;
 		}
 
 		rotationX -= InputStates.mouseXRel * sensitivity;
@@ -167,9 +147,9 @@ class Player : GameObject, IPhysical
 
 	mat4 cameraMatrix = mat4.identity();
 	
-	public RenderData RenderGUI(double tickOffset)
+	public RenderData RenderHUD(double tickOffset)
 	{
-		return RenderData(-1, []);
+		return RenderData(4, []);
 	}
 
 	public RenderData RenderCamera(double tickOffset)
@@ -179,12 +159,13 @@ class Player : GameObject, IPhysical
 		
 		vec3 dirVec = vec3(0,0,-1) * interpTrans.rotation;
 
-
 		cameraMatrix = mat4.look_at(interpTrans.position.toVec3() + vec3(0, 0.75, 0), interpTrans.position.toVec3() + vec3(0, 0.75, 0) + dirVec, vec3(0, 1, 0));
 
 		byte[] serialized = *cast(byte[mat4.sizeof]*)(&cameraMatrix);
 		return RenderData(0, serialized);
 	}
 }	
+
+
 
 

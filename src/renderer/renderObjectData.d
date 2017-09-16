@@ -19,7 +19,8 @@ void function(byte[] b)[] DrawFunctions =
 	&SetCamera,//0
 	&Demo,
 	&DrawPrimitives,
-	&MeshRender
+	&MeshRender,
+	&GUIRender //4
 	];
 
 /**
@@ -145,7 +146,6 @@ void MeshRender(byte[] b)
         string fileName = meshNames [id];
         meshTextures[id] = new Texture("./src/res/bitmap/" ~ fileName ~ ".png");
     }
-
     meshTextures[id].Bind();
 
     if(meshes[id] is null)
@@ -157,6 +157,14 @@ void MeshRender(byte[] b)
     }
 
     DrawSimpleMesh(meshes[id], parsedTrans);
+}
+
+/**
+* Draw parts of the player's GUI 
+*
+*/
+void GUIRender(byte[] b)
+{
 }
 
 
