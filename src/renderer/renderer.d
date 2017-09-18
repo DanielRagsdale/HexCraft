@@ -27,6 +27,7 @@ public void CreateDisplay(int width, int height, const(char)* title)
 
     shaders[0] = new Shader("./src/res/shader/block", 0x00);
     shaders[1] = new Shader("./src/res/shader/test", 0x00);
+    shaders[2] = new Shader("./src/res/shader/gui", 0x00);
     
 	SetShaderProgram(0);
 

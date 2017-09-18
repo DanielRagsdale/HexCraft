@@ -19,7 +19,8 @@ void function(byte[] b)[] DrawFunctions =
 	&SetCamera,//0
 	&Demo,
 	&DrawPrimitives,
-	&MeshRender
+	&MeshRender,
+	&GUIRender //4
 	];
 
 /**
@@ -157,6 +158,39 @@ void MeshRender(byte[] b)
     }
 
     DrawSimpleMesh(meshes[id], parsedTrans);
+}
+
+/**
+ * Draw GUI elements
+ **/
+GLfloat[] guiVerts = [
+	-0.01f, -0.01f, 0.0f,
+	 0.01f, -0.01f, 0.0f,
+	 0.0f,  0.01f, 0.0f];
+
+GLfloat[] guiTexCoords = [0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f];
+GLint[] guiIndices = [0,1,2];
+
+mat4 orthoMatrix = mat4.orthographic(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f);
+
+Mesh testMesh;
+
+void GUIRender(byte[] b)
+{
+	if(testMesh is null)
+	{
+		testMesh = new Mesh(guiVerts.ptr, guiTexCoords.ptr, 3, guiIndices.ptr, 3);
+	}
+    GLint shLoc = SetShaderProgram(2);
+	GLint orthoUniformLocation = glGetUniformLocation(shLoc, "ortho");
+	
+    glUniformMatrix4fv(orthoUniformLocation, 1, GL_FALSE, &orthoMatrix[0][0]);
+
+	glDisable(GL_DEPTH_TEST);
+
+	testMesh.Draw();
+
+	glEnable(GL_DEPTH_TEST);
 }
 
 

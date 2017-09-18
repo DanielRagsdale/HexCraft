@@ -32,7 +32,6 @@ class Player : GameObject, IPhysical
         AddObjectToIterable(this, IterableObjectTypes.PHYSICAL);
 		
 		AddFunctionToRender(&RenderCamera);
-		AddFunctionToRender(&RenderGUI);
 
 		originalRot = transform.rotation;
 	}
@@ -116,11 +115,11 @@ class Player : GameObject, IPhysical
 		if(InputStates.mouseRIGHT && !rPressed)
 		{
 			//Stupid raycast
-			vec_square looking = vec_square(0.0, 0.0, -0.1) * transform.rotation;
+			vec_square looking = vec_square(0.0, 0.0, -0.02) * transform.rotation;
 			
-			for(int i = 0; i < 60; i++)
+			for(int i = 0; i < 120; i++)
 			{
-				vec_block blockPos = cast(vec_block)(transform.position + vec_square(0,1.5,0) + looking * i);
+				vec_block blockPos = cast(vec_block)(transform.position + vec_square(0,1.7,0) + looking * i);
 				ushort block = map.getBlock(blockPos);
 
 				if(block)
@@ -137,7 +136,7 @@ class Player : GameObject, IPhysical
 					}
 					else
 					{
-						map.setBlock(cast(vec_block)(transform.position + vec_square(0,1.5,0) + looking * (i-1)), 1);
+						map.setBlock(cast(vec_block)(transform.position + vec_square(0,1.7,0) + looking * (i-1)), 1);
 						break;
 					}
 				}
@@ -167,11 +166,6 @@ class Player : GameObject, IPhysical
 
 	mat4 cameraMatrix = mat4.identity();
 	
-	public RenderData RenderGUI(double tickOffset)
-	{
-		return RenderData(-1, []);
-	}
-
 	public RenderData RenderCamera(double tickOffset)
 	{
 		Transform interpTrans = transform;

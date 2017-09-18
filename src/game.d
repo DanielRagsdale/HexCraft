@@ -7,6 +7,7 @@ import std.stdio;
 import std.concurrency;
 import std.conv;
 import std.algorithm.sorting;
+import std.functional;
 
 import util.time;
 import util.input;
@@ -20,11 +21,13 @@ import gl3n.linalg;
 import renderer;
 import display;
 import logicalGameState;
-import physicsEngine;
 import renderObjectData;
 import renderHexData;
 import gameObject;
 import transform;
+
+import physicsEngine;
+import guiEngine;
 
 import player;
 
@@ -111,6 +114,8 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 
 	worldMapModel = new MapModel(worldMap);	
 
+	AddFunctionToRender(toDelegate(&RenderGUI));
+
 	/*
 		End First Scene Init Script:
 		------------------------
@@ -151,7 +156,7 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 		//Objects	
 		auto dataArr = ExtractRenderObjects(CurrentTime() - lastFrameTime);
 		sort(cast(RenderData[])dataArr);
-		
+
         rMessage.SetData(worldMapModel.cm.values, dataArr); 
 		Thread.sleep( dur!("msecs")(1));  
     }
@@ -206,18 +211,18 @@ class RenderMessage
 	{
 		disp.Clear(0.5273f, 0.8047f, 0.9766f, 1.0f);
 		
-		//Render Objects
-		foreach(shared RenderData rd; mObjectData)
-		{
-			renderObjectData.DrawFunctions[rd.RenderObjectID](cast(byte[])rd.Data);
-		}
-		
 		//Render Map
 		foreach(shared ChunkModel cm; mHexData)
 		{
 			DrawRegion(cast(ChunkModel)cm, cast(vec_chunk)cm.loc);
 		}
 
+		//Render Objects
+		foreach(shared RenderData rd; mObjectData)
+		{
+			renderObjectData.DrawFunctions[rd.RenderObjectID](cast(byte[])rd.Data);
+		}
+		
 		renderer.Render();
 
 		hasNewData.atomicStore(false);

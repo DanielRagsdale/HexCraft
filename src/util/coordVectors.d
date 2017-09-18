@@ -143,13 +143,31 @@ struct VectorBlock
 
 	this(VectorHex c)
 	{
-		this(cast(int)round(c.x), cast(int)floor(c.y), cast(int)round(c.z));
+		float hW = round(0 - c.x - c.z);
+		float hX = round(c.x);
+		float hZ = round(c.z);
+		
+		float w_diff = abs(hW - (0 - c.x - c.z));
+		float x_diff = abs(hX - c.x);
+		float z_diff = abs(hZ - c.z);
+
+		if(x_diff > w_diff && x_diff > z_diff)
+		{
+			hX = -hW - hZ;
+		}
+		else if(z_diff > w_diff)
+		{
+			hZ = -hW - hX;
+		}
+
+		this(cast(int)hX, cast(int)floor(c.y), cast(int)hZ);
 	}
 
 	this(VectorSquare c)
 	{
 		vec3 hexVec = toHex(vec3(c.x,c.y,c.z));
-		this(cast(int)round(hexVec.x), cast(int)floor(hexVec.y), cast(int)round(hexVec.z));
+
+		this(VectorHex(hexVec.x, hexVec.y, hexVec.z));
 	}
 
 	this(VectorChunk c)
