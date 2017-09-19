@@ -160,15 +160,9 @@ void MeshRender(byte[] b)
 }
 
 /**
-<<<<<<< HEAD
 * Draw parts of the player's GUI 
 *
 */
-void GUIRender(byte[] b)
-{
-=======
- * Draw GUI elements
- **/
 GLfloat[] guiVerts = [
 	-0.01f, -0.01f, 0.0f,
 	 0.01f, -0.01f, 0.0f,
@@ -197,7 +191,6 @@ void GUIRender(byte[] b)
 	testMesh.Draw();
 
 	glEnable(GL_DEPTH_TEST);
->>>>>>> d97cce1d74ebba5f06237f4301fc8fe3f3ec510d
 }
 
 

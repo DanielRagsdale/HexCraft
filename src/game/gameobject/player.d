@@ -32,10 +32,6 @@ class Player : GameObject, IPhysical
         AddObjectToIterable(this, IterableObjectTypes.PHYSICAL);
 		
 		AddFunctionToRender(&RenderCamera);
-<<<<<<< HEAD
-		AddFunctionToRender(&RenderHUD);
-=======
->>>>>>> d97cce1d74ebba5f06237f4301fc8fe3f3ec510d
 
 		originalRot = transform.rotation;
 	}
@@ -150,14 +146,6 @@ class Player : GameObject, IPhysical
 
 	mat4 cameraMatrix = mat4.identity();
 	
-<<<<<<< HEAD
-	public RenderData RenderHUD(double tickOffset)
-	{
-		return RenderData(4, []);
-	}
-
-=======
->>>>>>> d97cce1d74ebba5f06237f4301fc8fe3f3ec510d
 	public RenderData RenderCamera(double tickOffset)
 	{
 		Transform interpTrans = transform;
