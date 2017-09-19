@@ -160,11 +160,44 @@ void MeshRender(byte[] b)
 }
 
 /**
+<<<<<<< HEAD
 * Draw parts of the player's GUI 
 *
 */
 void GUIRender(byte[] b)
 {
+=======
+ * Draw GUI elements
+ **/
+GLfloat[] guiVerts = [
+	-0.01f, -0.01f, 0.0f,
+	 0.01f, -0.01f, 0.0f,
+	 0.0f,  0.01f, 0.0f];
+
+GLfloat[] guiTexCoords = [0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f];
+GLint[] guiIndices = [0,1,2];
+
+mat4 orthoMatrix = mat4.orthographic(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f);
+
+Mesh testMesh;
+
+void GUIRender(byte[] b)
+{
+	if(testMesh is null)
+	{
+		testMesh = new Mesh(guiVerts.ptr, guiTexCoords.ptr, 3, guiIndices.ptr, 3);
+	}
+    GLint shLoc = SetShaderProgram(2);
+	GLint orthoUniformLocation = glGetUniformLocation(shLoc, "ortho");
+	
+    glUniformMatrix4fv(orthoUniformLocation, 1, GL_FALSE, &orthoMatrix[0][0]);
+
+	glDisable(GL_DEPTH_TEST);
+
+	testMesh.Draw();
+
+	glEnable(GL_DEPTH_TEST);
+>>>>>>> d97cce1d74ebba5f06237f4301fc8fe3f3ec510d
 }
 
 
