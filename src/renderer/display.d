@@ -55,6 +55,11 @@ class Display
 	    glClearColor(r, g, b, a);
 	    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
+	
+	@property float aspectRatio()
+	{
+		return (cast(float) width)/ height;
+	}
 
     void SwapBuffers()
     {

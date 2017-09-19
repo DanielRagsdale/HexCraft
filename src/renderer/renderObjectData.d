@@ -11,6 +11,7 @@ import texture;
 import game;
 import renderer;
 import shaderController;
+import textureController;
 
 /**
 * The array of draw functions that called with the information from RenderData
@@ -42,28 +43,41 @@ void Demo(byte[] b)
 }
 
 GLfloat[] guiVerts = [
-	-0.05f, -0.05f, 0.0f,
-	 0.05f, -0.05f, 0.0f,
-	 0.00f,  0.05f,  0.0f ];
+	-0.82f, -0.8f, 0.0f,
+	-0.82f, -1.0f, 0.0f,
+	 0.82f, -1.0f, 0.0f,
+	 0.82f, -0.8f, 0.0f];
+/*
+GLfloat[] guiVerts = [
+	-0.5f,  0.5f, 0.0f,
+	-0.5f, -0.5f, 0.0f,
+	 0.5f, -0.5f, 0.0f,
+	 0.5f,  0.5f, 0.0f ];
+*/
+
 
 GLfloat[] guiTexCoords = [
-	0.0f, 1.0f,
-	0.0f, 1.0f,
-	0.0f, 1.0f];
+	0.0f, 0.0f,
+	0.0f, 0.0781f,
+	0.64f, 0.0781f,
+	0.64f, 0.0f];
 
-GLint[] guiIndices = [0,1,2];
+GLint[] guiIndices = [0,1,2, 0,2,3];
 
-mat4 orthoMatrix = mat4.orthographic(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f);
+mat4 orthoMatrix = mat4.orthographic(-1.0f, 1.0f, -2.0f, 2.0f, 1.0f, -1.0f);
 
 Mesh testMesh;
 
 void GUIRender(byte[] b)
 {
-	/*
+	orthoMatrix = mat4.orthographic(-1.0f * disp.aspectRatio, 1.0f * disp.aspectRatio, -1.0f, 1.0f, 1.0f, -1.0f);
+
 	if(testMesh is null)
 	{
-		testMesh = new Mesh(guiVerts.ptr, guiTexCoords.ptr, 3, guiIndices.ptr, 3);
+		testMesh = new Mesh(guiVerts.ptr, guiTexCoords.ptr, 4, guiIndices.ptr, 6);
 	}
+	SetTexture(TextureTypes.HUD);
+
     GLint shLoc = SetShaderProgram(ShaderTypes.GUI);
 	GLint orthoUniformLocation = glGetUniformLocation(shLoc, "ortho");
 	
@@ -74,8 +88,6 @@ void GUIRender(byte[] b)
 	testMesh.Draw();
 
 	glEnable(GL_DEPTH_TEST);
-
-	*/
 }
 
 

@@ -14,14 +14,15 @@ uint textureID = -1;
 
 public enum TextureTypes
 {
-	HEXES
-	//TEST,
+	HEXES,
+	HUD
 	//GUI
 }
 
 public void InitTextures()
 {
 	textures[TextureTypes.HEXES] = new Texture("./src/res/bitmap/hexes.png");
+	textures[TextureTypes.HUD] = new Texture("./src/res/bitmap/gui/hud.png");
 }
 
 /**
