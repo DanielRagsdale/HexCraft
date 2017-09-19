@@ -5,6 +5,7 @@ import std.stdio;
 import display;
 import shader;
 import shaderController;
+import textureController;
 import mesh;
 
 import gl3n.linalg;
@@ -30,6 +31,7 @@ public void CreateDisplay(int width, int height, const(char)* title)
 	glEnable(GL_ALPHA);
 
 	InitShaders();
+	InitTextures();
 }
 
 public void Render ()

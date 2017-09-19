@@ -11,6 +11,7 @@ import texture;
 import game;
 import renderer;
 import shaderController;
+import textureController;
 
 import map;
 import mapModel;
@@ -18,23 +19,13 @@ import mapModel;
 import util.values;
 import util.coordVectors;
 
-Texture hexTex;
 HexMesh[vec_chunk] meshes;
 uint[vec_chunk] chunkVersions;
 
 void DrawRegion(ChunkModel cm, vec_chunk c)
 {
-	if(hexTex is null)
-	{
- 		hexTex = new Texture("./src/res/bitmap/hexes.png");
+	SetTexture(TextureTypes.HEXES);	
 
-		hexTex.Bind();
-	}
-	else
-	{
-		hexTex.Bind();
-	}
-	
 	HexMesh* m = c in meshes;	
 	if(m is null)
 	{

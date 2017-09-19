@@ -24,7 +24,7 @@ void TickGUI()
 
 RenderData RenderGUI(double tickOffset)
 {
-	return RenderData(4, []);
+	return RenderData(2, []);
 }
 
 
