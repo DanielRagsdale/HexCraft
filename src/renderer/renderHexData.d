@@ -10,6 +10,7 @@ import hexMesh;
 import texture;
 import game;
 import renderer;
+import shaderController;
 
 import map;
 import mapModel;
@@ -58,7 +59,7 @@ void DrawRegion(ChunkModel cm, vec_chunk c)
 */
 void DrawSimpleChunk(HexMesh mesh, mat4 transformMatrix)
 {
-    GLint shLoc = SetShaderProgram(0);
+    GLint shLoc = SetShaderProgram(ShaderTypes.BLOCK);
 
     GLint transformUniformLocation = glGetUniformLocation(shLoc, "transform");
     GLint cameraUniformLocation = glGetUniformLocation(shLoc, "camera");

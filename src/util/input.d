@@ -204,8 +204,6 @@ void UpdateInput()
             InputStates.mouseXRel = event.motion.xrel;
             InputStates.mouseYRel = event.motion.yrel;
 
-//            writeln(event.motion.x, "   ", event.motion.y);
-
             InputStates.mouseX = event.motion.x;
 
             InputStates.mouseY = event.motion.y;

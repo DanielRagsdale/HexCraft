@@ -68,7 +68,7 @@ class Player : GameObject, IPhysical
 			movement.y = 0;
 			transform.velocity += movement * SPEED_TRUE;
         }
-		if(InputStates.keyD)
+		if(InputStates.keyD == 1)
         {
 			movement = vec_square(1, 0.0, 0.0) * transform.rotation;
 			movement.y = 0;
@@ -80,13 +80,13 @@ class Player : GameObject, IPhysical
 		{
 			transform.velocity.y = 5.0f;
 		}
-
+		
 		if(InputStates.mouseLEFT == 1)
 		{
 			//Stupid raycast
-			vec_square looking = vec_square(0.0, 0.0, -0.1) * transform.rotation;
+			vec_square looking = vec_square(0.0, 0.0, -0.02) * transform.rotation;
 			
-			for(int i = 0; i < 60; i++)
+			for(int i = 0; i < 130; i++)
 			{
 				vec_block blockPos = cast(vec_block)(transform.position + vec_square(0,1.5,0) + looking * i);
 				ushort block = map.getBlock(blockPos);
@@ -103,7 +103,7 @@ class Player : GameObject, IPhysical
 			//Stupid raycast
 			vec_square looking = vec_square(0.0, 0.0, -0.02) * transform.rotation;
 			
-			for(int i = 0; i < 120; i++)
+			for(int i = 0; i < 130; i++)
 			{
 				vec_block blockPos = cast(vec_block)(transform.position + vec_square(0,1.7,0) + looking * i);
 				ushort block = map.getBlock(blockPos);

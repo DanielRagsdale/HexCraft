@@ -10,6 +10,7 @@ import mesh;
 import texture;
 import game;
 import renderer;
+import shaderController;
 
 /**
 * The array of draw functions that called with the information from RenderData
@@ -181,7 +182,7 @@ void GUIRender(byte[] b)
 	{
 		testMesh = new Mesh(guiVerts.ptr, guiTexCoords.ptr, 3, guiIndices.ptr, 3);
 	}
-    GLint shLoc = SetShaderProgram(2);
+    GLint shLoc = SetShaderProgram(ShaderTypes.GUI);
 	GLint orthoUniformLocation = glGetUniformLocation(shLoc, "ortho");
 	
     glUniformMatrix4fv(orthoUniformLocation, 1, GL_FALSE, &orthoMatrix[0][0]);
@@ -200,7 +201,7 @@ void GUIRender(byte[] b)
 */
 void DrawSimpleMesh(Mesh mesh, mat4 transformMatrix)
 {
-    GLint shLoc = SetShaderProgram(0);
+    GLint shLoc = SetShaderProgram(ShaderTypes.BLOCK);
 
     GLint transformUniformLocation = glGetUniformLocation(shLoc, "transform");
 
