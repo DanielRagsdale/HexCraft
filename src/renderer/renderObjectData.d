@@ -70,15 +70,15 @@ GLint[] guiIndices = [0,1,2, 0,2,3,   4,5,6, 4,6,7];
 
 mat4 orthoMatrix = mat4.orthographic(-1.0f, 1.0f, -2.0f, 2.0f, 1.0f, -1.0f);
 
-Mesh testMesh;
+Mesh guiMesh;
 
 void GUIRender(byte[] b)
 {
 	orthoMatrix = mat4.orthographic(-1.0f * disp.aspectRatio, 1.0f * disp.aspectRatio, -1.0f, 1.0f, 1.0f, -1.0f);
 
-	if(testMesh is null)
+	if(guiMesh is null)
 	{
-		testMesh = new Mesh(guiVerts.ptr, guiTexCoords.ptr, guiVerts.length / 3, guiIndices.ptr, guiIndices.length);
+		guiMesh = new Mesh(guiVerts.ptr, guiTexCoords.ptr, guiVerts.length / 3, guiIndices.ptr, guiIndices.length);
 	}
 	SetTexture(TextureTypes.HUD);
 
@@ -89,7 +89,7 @@ void GUIRender(byte[] b)
 
 	glDisable(GL_DEPTH_TEST);
 
-	testMesh.Draw();
+	guiMesh.Draw();
 
 	glEnable(GL_DEPTH_TEST);
 }

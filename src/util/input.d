@@ -113,6 +113,17 @@ void UpdateInput()
 	} else {
     	InputStates.keySPACE = 0;
 	}
+    if(keystates[SDL_SCANCODE_LCTRL]) {
+    	InputStates.keyLCTRL++;
+	} else {
+    	InputStates.keyLCTRL = 0;
+	}
+    if(keystates[SDL_SCANCODE_LSHIFT]) {
+    	InputStates.keyLSHIFT++;
+	} else {
+    	InputStates.keyLSHIFT = 0;
+	}
+
     if(keystates[SDL_SCANCODE_LEFT]) {
     	InputStates.keyLEFT++;
 	} else {
@@ -243,6 +254,9 @@ struct InputStates
     public static int key9;
 
     public static int keySPACE;
+	
+	public static int keyLCTRL;
+	public static int keyLSHIFT;
 
     public static int keyLEFT;
     public static int keyRIGHT;

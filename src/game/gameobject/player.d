@@ -37,42 +37,73 @@ class Player : GameObject, IPhysical
 	}
 
 	//TODO move sensitivity nonlocal
-	float sensitivity = 0.5f;
+	float sensitivity = 0.3f;
 
 	Transform lastTrans;
+
+	ushort activeBlock = 0;
+
+	bool sprinting;
+	int doubleTapCounter;
 
     public override void Update(ref Map map)
     {
 		lastTrans = transform;
+		
+		doubleTapCounter--;
 
         vec_square movement;
 	
 		transform.velocity.x = 0.0f;
 		transform.velocity.z = 0.0f;
 
+		double speed = SPEED_TRUE;
+		if(InputStates.keyLSHIFT)
+		{
+			speed /= 2;
+			sprinting = false;
+		}
+		else if(sprinting)
+		{
+			speed *= 2;
+		}
+		
+		if(InputStates.keyW == 1 && doubleTapCounter < 0)
+		{
+			doubleTapCounter = 20;
+		}
+		else if(InputStates.keyW == 1 && doubleTapCounter > 0)
+		{
+			sprinting = true;
+		}
+
         if(InputStates.keyW)
         {
 			movement = vec_square(0.0, 0.0, -1) * transform.rotation;
 			movement.y = 0;
-			transform.velocity += movement * SPEED_TRUE;
+			transform.velocity += movement * speed;
         }
-        if(InputStates.keyS)
+		else
+		{
+			sprinting = false;
+		}
+		if(InputStates.keyS)
         {
 			movement = vec_square(0.0, 0.0, 1) * transform.rotation;
 			movement.y = 0;
-			transform.velocity += movement * SPEED_TRUE;
+			transform.velocity += movement * speed;
         }
         if(InputStates.keyA)
         {
 			movement = vec_square(-1, 0.0, 0.0) * transform.rotation;
 			movement.y = 0;
-			transform.velocity += movement * SPEED_TRUE;
+			transform.velocity += movement * speed;
         }
 		if(InputStates.keyD)
         {
 			movement = vec_square(1, 0.0, 0.0) * transform.rotation;
 			movement.y = 0;
-			transform.velocity += movement * SPEED_TRUE;
+			transform.velocity += movement * speed;
         }
 
 		//TODO implement actual, not shitty jump mechanics 	
@@ -81,14 +112,25 @@ class Player : GameObject, IPhysical
 			transform.velocity.y = 5.0f;
 		}
 		
+		if(InputStates.keyE == 1)
+		{
+			activeBlock = (activeBlock + 1) % 9;
+		}
+	   	else if(InputStates.keyQ == 1)
+		{
+			activeBlock = (activeBlock + 8) % 9;
+		}
+
+
 		vec_square playerHeight = vec_square(0, 1.75, 0);
+		int range = 175;
 
 		if(InputStates.mouseLEFT == 1)
 		{
 			//Stupid raycast
 			vec_square looking = vec_square(0.0, 0.0, -0.02) * transform.rotation;
 			
-			for(int i = 0; i < 130; i++)
+			for(int i = 0; i < range; i++)
 			{
 				vec_block blockPos = cast(vec_block)(transform.position + playerHeight + looking * i);
 				ushort block = map.getBlock(blockPos);
@@ -105,28 +147,15 @@ class Player : GameObject, IPhysical
 			//Stupid raycast
 			vec_square looking = vec_square(0.0, 0.0, -0.02) * transform.rotation;
 			
-			for(int i = 0; i < 175; i++)
+			for(int i = 0; i < range; i++)
 			{
 				vec_block blockPos = cast(vec_block)(transform.position + playerHeight + looking * i);
 				ushort block = map.getBlock(blockPos);
 
 				if(block)
 				{
-					if(InputStates.keyQ)
-					{
-						map.setBlock(blockPos, ++block);
-						break;
-					}
-					else if(InputStates.keyE)
-					{
-						map.setBlock(blockPos, --block);
-						break;
-					}
-					else
-					{
-						map.setBlock(cast(vec_block)(transform.position + playerHeight + looking * (i-1)), 1);
-						break;
-					}
+					map.setBlock(cast(vec_block)(transform.position + playerHeight + looking * (i-1)), cast(ushort)(activeBlock + 1));
+					break;
 				}
 			}
 		}
