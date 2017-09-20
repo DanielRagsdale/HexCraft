@@ -18,9 +18,9 @@ class Mesh
         uint m_drawCount;
     
     
-    this(GLfloat* vertices, GLfloat* texCoords, uint numVertices, GLint* indices, uint numIndices)
+    this(GLfloat* vertices, GLfloat* texCoords, ulong numVertices, GLint* indices, ulong numIndices)
     {    
-	    m_drawCount = numIndices;
+	    m_drawCount = cast(uint)numIndices;
 	
 	    glGenVertexArrays(1, &m_vertexArrayObject);
 	    glBindVertexArray(m_vertexArrayObject);

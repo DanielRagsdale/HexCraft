@@ -43,26 +43,30 @@ void Demo(byte[] b)
 }
 
 GLfloat[] guiVerts = [
+	//HotBar
 	-0.82f, -0.8f, 0.0f,
 	-0.82f, -1.0f, 0.0f,
 	 0.82f, -1.0f, 0.0f,
-	 0.82f, -0.8f, 0.0f];
-/*
-GLfloat[] guiVerts = [
-	-0.5f,  0.5f, 0.0f,
-	-0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.5f,  0.5f, 0.0f ];
-*/
-
+	 0.82f, -0.8f, 0.0f,
+	 
+	//CrossHair
+	-0.03f,  0.03f, 0.0f,
+	-0.03f, -0.03f, 0.0f,
+	 0.03f, -0.03f, 0.0f,
+	 0.03f,  0.03f, 0.0f];
 
 GLfloat[] guiTexCoords = [
-	0.0f, 0.0f,
-	0.0f, 0.0781f,
-	0.64f, 0.0781f,
-	0.64f, 0.0f];
+	0.0f,    0.0f,
+	0.0f,    0.0781f,
+	0.6406f, 0.0781f,
+	0.6406f, 0.0f,
 
-GLint[] guiIndices = [0,1,2, 0,2,3];
+	0.6406f, 0.0f,
+	0.6406f, 0.0781f,
+	0.7188f, 0.0781f,
+	0.7188f, 0.0f];
+
+GLint[] guiIndices = [0,1,2, 0,2,3,   4,5,6, 4,6,7];
 
 mat4 orthoMatrix = mat4.orthographic(-1.0f, 1.0f, -2.0f, 2.0f, 1.0f, -1.0f);
 
@@ -74,7 +78,7 @@ void GUIRender(byte[] b)
 
 	if(testMesh is null)
 	{
-		testMesh = new Mesh(guiVerts.ptr, guiTexCoords.ptr, 4, guiIndices.ptr, 6);
+		testMesh = new Mesh(guiVerts.ptr, guiTexCoords.ptr, guiVerts.length / 3, guiIndices.ptr, guiIndices.length);
 	}
 	SetTexture(TextureTypes.HUD);
 

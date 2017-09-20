@@ -204,9 +204,6 @@ void UpdateInput()
 
 struct InputStates
 {
-	public static shared int shouldQuit;
-
-
     public static int keyA;
 //    public static int keyB;
 //    public static int keyC;
