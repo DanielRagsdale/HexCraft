@@ -10,213 +10,153 @@ import renderer;
 
 public shared bool ShouldQuit;
 
-shared SDL_Event[] rawEvents;
 
 void PollSDLEvents()
 {
-	//SDL_Event[] tempEvents;
-
-    SDL_Event event;
-    while(SDL_PollEvent(&event))
-    {
-    	if(event.type == SDL_QUIT)
-    	{
-    	ShouldQuit = true;
-    	}
-		else
-		{
-			rawEvents ~= event;
-		}
-	}
-
-	//rawEvents.atomicStore(cast(shared)tempEvents);
+	SDL_PumpEvents();
 }
 
 void UpdateInput()
 {
-	//SDL_Event[] localEvents;	
-	//localEvents.atomicStore(cast(SDL_Event[])rawEvents);
-	//localEvents = cast(SDL_Event[])rawEvents;
+	const Uint8* keystates = SDL_GetKeyboardState(null);
 
     InputStates.mouseXRel = 0;
     InputStates.mouseYRel = 0;
 
-	foreach(event; rawEvents)
-	{
-        if(event.type == SDL_KEYDOWN)
-        {
-            switch(event.key.keysym.sym)
-            {
-                case SDLK_a:
-                    InputStates.keyA.atomicOp!"+="(1);
-                    break;
-                case SDLK_d:
-                    InputStates.keyD.atomicOp!"+="(1);
-                    break;
-                case SDLK_e:
-                    InputStates.keyE.atomicOp!"+="(1);
-                    break;
-                case SDLK_s:
-                    InputStates.keyS.atomicOp!"+="(1);
-                    break;
-                case SDLK_q:
-                    InputStates.keyQ.atomicOp!"+="(1);
-                    break;
-                case SDLK_w:
-                    InputStates.keyW.atomicOp!"+="(1);
-                    break;
-                case SDLK_z:
-                    InputStates.keyZ.atomicOp!"+="(1);
-                    break;
+    if(keystates[SDL_SCANCODE_A]) {
+   		InputStates.keyA++;
+	} else {
+   		InputStates.keyA = 0;
+	}
+    if(keystates[SDL_SCANCODE_D]) {
+    	InputStates.keyD++;
+	} else {
+    	InputStates.keyD = 0;
+	}
+    if(keystates[SDL_SCANCODE_E]) {
+    	InputStates.keyE++;
+	} else {
+    	InputStates.keyE = 0;
+	}
+    if(keystates[SDL_SCANCODE_S]) {
+    	InputStates.keyS++;
+	} else {
+    	InputStates.keyS = 0;
+	}
+    if(keystates[SDL_SCANCODE_Q]) {
+    	InputStates.keyQ++;
+	} else {
+    	InputStates.keyQ = 0;
+	}
+    if(keystates[SDL_SCANCODE_W]) {
+    	InputStates.keyW++;
+	} else {
+    	InputStates.keyW = 0;
+	}
+    if(keystates[SDL_SCANCODE_Z]) {
+    	InputStates.keyZ++;
+	} else {
+    	InputStates.keyZ = 0;
+	}
+    if(keystates[SDL_SCANCODE_0]) {
+    	InputStates.key0++;
+	} else {
+    	InputStates.key0 = 0;
+	}
+    if(keystates[SDL_SCANCODE_1]) {
+    	InputStates.key1++;
+	} else {
+    	InputStates.key1 = 0;
+	}
+    if(keystates[SDL_SCANCODE_2]) {
+    	InputStates.key2++;
+	} else {
+    	InputStates.key2 = 0;
+	}
+    if(keystates[SDL_SCANCODE_3]) {
+    	InputStates.key3++;
+	} else {
+    	InputStates.key3 = 0;
+	}
+    if(keystates[SDL_SCANCODE_4]) {
+    	InputStates.key4++;
+	} else {
+    	InputStates.key4 = 0;
+	}
+    if(keystates[SDL_SCANCODE_5]) {
+    	InputStates.key5++;
+	} else {
+    	InputStates.key5 = 0;
+	}
+    if(keystates[SDL_SCANCODE_6]) {
+    	InputStates.key6++;
+	} else {
+    	InputStates.key6 = 0;
+	}
+    if(keystates[SDL_SCANCODE_7]) {
+    	InputStates.key7++;
+	} else {
+    	InputStates.key7 = 0;
+	}
+    if(keystates[SDL_SCANCODE_8]) {
+    	InputStates.key8++;
+	} else {
+    	InputStates.key8 = 0;
+	}
+    if(keystates[SDL_SCANCODE_9]) {
+    	InputStates.key9++;
+	} else {
+    	InputStates.key9 = 0;
+	}
+    if(keystates[SDL_SCANCODE_SPACE]) {
+    	InputStates.keySPACE++;
+	} else {
+    	InputStates.keySPACE = 0;
+	}
+    if(keystates[SDL_SCANCODE_LEFT]) {
+    	InputStates.keyLEFT++;
+	} else {
+    	InputStates.keyLEFT = 0;
+	}
+    if(keystates[SDL_SCANCODE_RIGHT]) {
+    	InputStates.keyRIGHT++;
+	} else {
+    	InputStates.keyRIGHT = 0;
+	}
+    if(keystates[SDL_SCANCODE_UP]) {
+    	InputStates.keyUP++;
+	} else {
+    	InputStates.keyUP = 0;
+	}
+    if(keystates[SDL_SCANCODE_DOWN]) {
+    	InputStates.keyDOWN++;
+	} else {
+    	InputStates.keyDOWN = 0;
+	}
+	
+	//Mouse Button Stuff
+	
+	uint buttonMask = SDL_GetMouseState(null, null);
+	if(buttonMask & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+		InputStates.mouseLEFT++;
+	} else {
+		InputStates.mouseLEFT = 0;
+	}
+	if(buttonMask & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+		InputStates.mouseRIGHT++;
+	} else {
+		InputStates.mouseRIGHT = 0;
+	}
 
-                case SDLK_0:
-                    InputStates.key0.atomicOp!"+="(1);
-                    break;
-                case SDLK_1:
-                    InputStates.key1.atomicOp!"+="(1);
-                    break;
-                case SDLK_2:
-                    InputStates.key2.atomicOp!"+="(1);
-                    break;
-                case SDLK_3:
-                    InputStates.key3.atomicOp!"+="(1);
-                    break;
-                case SDLK_4:
-                    InputStates.key4.atomicOp!"+="(1);
-                    break;
-                case SDLK_5:
-                    InputStates.key5.atomicOp!"+="(1);
-                    break;
-                case SDLK_6:
-                    InputStates.key6.atomicOp!"+="(1);
-                    break;
-                case SDLK_7:
-                    InputStates.key7.atomicOp!"+="(1);
-                    break;
-                case SDLK_8:
-                    InputStates.key8.atomicOp!"+="(1);
-                    break;
-                case SDLK_9:
-                    InputStates.key9.atomicOp!"+="(1);
-                    break;
-
-                case SDLK_SPACE:
-                    InputStates.keySPACE.atomicOp!"+="(1);
-                    break;
-
-                case SDLK_LEFT:
-                    InputStates.keyLEFT.atomicOp!"+="(1);
-                    break;
-                case SDLK_RIGHT:
-                    InputStates.keyRIGHT.atomicOp!"+="(1);
-                    break;
-                case SDLK_UP:
-                    InputStates.keyUP.atomicOp!"+="(1);
-                    break;
-                case SDLK_DOWN:
-                    InputStates.keyDOWN.atomicOp!"+="(1);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        else if(event.type == SDL_KEYUP)
-        {
-            switch(event.key.keysym.sym)
-            {
-                case SDLK_a:
-                    InputStates.keyA = 0;
-                    break;
-                case SDLK_d:
-                    InputStates.keyD = 0;
-                    break;
-                case SDLK_e:
-                    InputStates.keyE = 0;
-                    break;
-                case SDLK_s:
-                    InputStates.keyS = 0;
-                    break;
-                case SDLK_q:
-                    InputStates.keyQ = 0;
-                    break;
-                case SDLK_w:
-                    InputStates.keyW = 0;
-                    break;
-                case SDLK_z:
-                    InputStates.keyZ = 0;
-                    break;
-
-                case SDLK_0:
-                    InputStates.key0 = 0;
-                    break;
-                case SDLK_1:
-                    InputStates.key1 = 0;
-                    break;
-                case SDLK_2:
-                    InputStates.key2 = 0;
-                    break;
-                case SDLK_3:
-                    InputStates.key3 = 0;
-                    break;
-                case SDLK_4:
-                    InputStates.key4 = 0;
-                    break;
-                case SDLK_5:
-                    InputStates.key5 = 0;
-                    break;
-                case SDLK_6:
-                    InputStates.key6 = 0;
-                    break;
-                case SDLK_7:
-                    InputStates.key7 = 0;
-                    break;
-                case SDLK_8:
-                    InputStates.key8 = 0;
-                    break;
-                case SDLK_9:
-                    InputStates.key9 = 0;
-                    break;
-
-                case SDLK_SPACE:
-                    InputStates.keySPACE = 0;
-                    break;
-
-                case SDLK_LEFT:
-                    InputStates.keyLEFT = 0;
-                    break;
-                case SDLK_RIGHT:
-                    InputStates.keyRIGHT = 0;
-                    break;
-                case SDLK_UP:
-                    InputStates.keyUP = 0;
-                    break;
-                case SDLK_DOWN:
-                    InputStates.keyDOWN = 0;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        else if(event.type == SDL_MOUSEMOTION)
-        {
-            InputStates.mouseXRel = event.motion.xrel;
-            InputStates.mouseYRel = event.motion.yrel;
-
-            InputStates.mouseX = event.motion.x;
-
-            InputStates.mouseY = event.motion.y;
-        }
+	/*
 		else if(event.type == SDL_MOUSEBUTTONDOWN)
 		{
 			switch(event.button.button)
 			{
 				case SDL_BUTTON_LEFT:
-					InputStates.mouseLEFT.atomicOp!"+="(1);
 					break;
 				case SDL_BUTTON_RIGHT:
-					InputStates.mouseRIGHT.atomicOp!"+="(1);
+					InputStates.mouseRIGHT++;
 					break;
 				default:
 					break;
@@ -236,9 +176,30 @@ void UpdateInput()
 					break;
 			}
 		}
-	}
-	rawEvents = [];
+	*/
 
+	//Mouse Motion Stuff
+
+    SDL_Event[128] inputEvents;
+	int amt = SDL_PeepEvents(inputEvents.ptr, inputEvents.length, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
+    for(int i = 0; i < amt; i++)
+    {
+		SDL_Event event = inputEvents[i];
+
+    	if(event.type == SDL_QUIT)
+    	{
+    		ShouldQuit = true;
+    	}
+		else if(event.type == SDL_MOUSEMOTION)
+        {
+            InputStates.mouseXRel = event.motion.xrel;
+            InputStates.mouseYRel = event.motion.yrel;
+
+            InputStates.mouseX = event.motion.x;
+
+            InputStates.mouseY = event.motion.y;
+        }
+	}
 }
 
 struct InputStates
@@ -246,58 +207,57 @@ struct InputStates
 	public static shared int shouldQuit;
 
 
-    public static shared int keyA;
-//    public static shared int keyB;
-//    public static shared int keyC;
-    public static shared int keyD;
-    public static shared int keyE;
-//    public static shared int keyF;
-//    public static shared int keyG;
-//    public static shared int keyH;
-//    public static shared int keyI;
-//    public static shared int keyK;
-//    public static shared int keyL;
-//    public static shared int keyM;
-//    public static shared int keyN;
-//    public static shared int keyO;
-//    public static shared int keyP;
-    public static shared int keyQ;
-//    public static shared int keyR;
-    public static shared int keyS;
-//    public static shared int keyT;
-//    public static shared int keyU;
-//    public static shared int keyV
-    public static shared int keyW;
-//    public static shared int keyX;
-//    public static shared int keyY;
-    public static shared int keyZ;
+    public static int keyA;
+//    public static int keyB;
+//    public static int keyC;
+    public static int keyD;
+    public static int keyE;
+//    public static int keyF;
+//    public static int keyG;
+//    public static int keyH;
+//    public static int keyI;
+//    public static int keyK;
+//    public static int keyL;
+//    public static int keyM;
+//    public static int keyN;
+//    public static int keyO;
+//    public static int keyP;
+    public static int keyQ;
+//    public static int keyR;
+    public static int keyS;
+//    public static int keyT;
+//    public static int keyU;
+//    public static int keyV
+    public static int keyW;
+//    public static int keyX;
+//    public static int keyY;
+    public static int keyZ;
 
 
-    public static shared int key0;
-    public static shared int key1;
-    public static shared int key2;
-    public static shared int key3;
-    public static shared int key4;
-    public static shared int key5;
-    public static shared int key6;
-    public static shared int key7;
-    public static shared int key8;
-    public static shared int key9;
+    public static int key0;
+    public static int key1;
+    public static int key2;
+    public static int key3;
+    public static int key4;
+    public static int key5;
+    public static int key6;
+    public static int key7;
+    public static int key8;
+    public static int key9;
 
-    public static shared int keySPACE;
+    public static int keySPACE;
 
-    public static shared int keyLEFT;
-    public static shared int keyRIGHT;
-    public static shared int keyUP;
-    public static shared int keyDOWN;
+    public static int keyLEFT;
+    public static int keyRIGHT;
+    public static int keyUP;
+    public static int keyDOWN;
 
+    public static int mouseXRel;
+    public static int mouseYRel;
 
-    public static shared int mouseXRel;
-    public static shared int mouseYRel;
+    public static uint mouseX;
+    public static uint mouseY;
 
-    public static shared uint mouseX;
-    public static shared uint mouseY;
-
-	public static shared int mouseLEFT;
-	public static shared int mouseRIGHT;
+	public static int mouseLEFT;
+	public static int mouseRIGHT;
 }
