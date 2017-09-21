@@ -107,7 +107,7 @@ void LogicThread(Tid parentTid, shared(RenderMessage) rMessage)
 		------------------------
 	*/
 
-    RegisterGameObject(new Player(Transform(vec_square(0.0, 0.0, 0.0))));
+    RegisterGameObject(new Player(Transform(vec_square(10.0, 50.0, 10.0))));
 	
 	worldMap = new Map();
 	GenerateMap(worldMap);
