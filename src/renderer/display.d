@@ -48,6 +48,9 @@ class Display
         DerelictGL3.reload();
 
 	    glEnable(GL_DEPTH_TEST);
+
+		glEnable (GL_BLEND);
+   		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     void Clear(float r, float g, float b, float a)
