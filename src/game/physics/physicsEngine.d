@@ -18,23 +18,28 @@ void TickPhysics(ref Map map)
 	{
 		obj.transform.velocity += vec_square(0, -9.8, 0) * PHYSICS_DT;
 		
-		obj.transform.position += obj.transform.velocity * PHYSICS_DT;
-		
-		vec_square sqCoords = vec_square(obj.transform.x, obj.transform.y, obj.transform.z);
-		if(map.getBlock(cast(vec_block)sqCoords))
+		foreach(delta; square_dn)
 		{
-			obj.transform.y = ceil(obj.transform.y) + 0.01;
-			obj.transform.vy = 0.0f;
-		}
+			vec_block blockCoords = obj.transform.position + delta * (cast(IPhysical)obj).GetRadius();
+			
+			vec_square intr = cast(vec_square)blockCoords - obj.transform.position - vec_square(0,1,0);
 
-		//foreach(delta; hex_dn)
-		{
-			if(map.getBlock(cast(vec_block)obj.transform.position))
+			if(map.getBlock(blockCoords))
 			{
-				obj.transform.position -= obj.transform.velocity * PHYSICS_DT * 1.01;
-				obj.transform.velocity *= 0;
+				if(map.getBlock(cast(vec_block)(obj.transform.position + delta * (cast(IPhysical)obj).GetRadius() * 0.9)))
+				{
+					vec_square pushOut = delta * (delta*intr) * 0.1 * (cast(IPhysical)obj).GetRadius();
+
+					obj.transform.position -= pushOut;
+				}
+
+				double limitedDot = max (0.0, delta*obj.transform.velocity); 
+				vec_square pComponent = delta * limitedDot;
+				
+				obj.transform.velocity -= pComponent;
 			}
 		}
+		obj.transform.position += obj.transform.velocity * PHYSICS_DT;
 	}	
 }
 

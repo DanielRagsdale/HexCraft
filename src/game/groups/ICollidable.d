@@ -5,5 +5,5 @@ import gl3n.linalg;
 */
 interface ICollidable
 {
-	double getRadius();
+	double GetRadius();
 }

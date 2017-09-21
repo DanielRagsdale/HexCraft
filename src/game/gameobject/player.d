@@ -170,9 +170,9 @@ class Player : GameObject, IPhysical
 				* (PI / 180)) * quat.identity.rotatex(rotationY * (PI / 180));
     }
 
-	public double getRadius()
+	public double GetRadius()
 	{
-		return 0.75;
+		return 0.1;
 	}
 
 	mat4 cameraMatrix = mat4.identity();
@@ -184,7 +184,7 @@ class Player : GameObject, IPhysical
 		
 		vec3 dirVec = vec3(0,0,-1) * interpTrans.rotation;
 
-		cameraMatrix = mat4.look_at(interpTrans.position.toVec3() + vec3(0, 0.75, 0), interpTrans.position.toVec3() + vec3(0, 0.75, 0) + dirVec, vec3(0, 1, 0));
+		cameraMatrix = mat4.look_at(interpTrans.position.toVec3() + vec3(0, 1.75, 0), interpTrans.position.toVec3() + vec3(0, 1.75, 0) + dirVec, vec3(0, 1, 0));
 
 		byte[] serialized = *cast(byte[mat4.sizeof]*)(&cameraMatrix);
 		return RenderData(0, serialized);

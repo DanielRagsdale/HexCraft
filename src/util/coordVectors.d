@@ -32,27 +32,48 @@ struct VectorSquare
 		this(squareVec.x, squareVec.y, squareVec.z);
 	}
 
+	this(VectorBlock c)
+	{
+		this(cast(VectorHex)c);
+	}
+
 	vec3 toVec3()
 	{
 		return vec3(x,y,z);
 	}
+
+	float dot(VectorSquare v) const
+	{
+		return x*v.x + y*v.y +z*v.z;
+	}
 	
+	/**
+	  * Unary Operations
+	 **/
+	VectorSquare opUnary(string s : "-")() const {
+		return VectorSquare(-x, -y, -z);
+	}
+
+
 	/**
 	  * Binary Operations
 	 **/
-    public VectorSquare opBinary(string op)(VectorSquare r) if((op == "+") || (op == "-")) {
+    public VectorSquare opBinary(string op)(VectorSquare r) const if((op == "+") || (op == "-")) {
 		VectorSquare t;
         mixin("t.x = x" ~ op ~ "r.x;");
         mixin("t.y = y" ~ op ~ "r.y;");
         mixin("t.z = z" ~ op ~ "r.z;");
 		return t;
     }
-	VectorSquare opBinary(string op)(double r) if((op == "*") || (op == "/")) {
+	VectorSquare opBinary(string op)(double r) const if((op == "*") || (op == "/")) {
 		VectorSquare t;
         mixin("t.x = x" ~ op ~ "r;");
         mixin("t.y = y" ~ op ~ "r;");
         mixin("t.z = z" ~ op ~ "r;");
 		return t;
+    }
+	double opBinary(string op : "*")(VectorSquare r) const {
+		return dot(r);
     }
   	
    	/**
@@ -126,6 +147,13 @@ struct VectorHex
 		vec3 hexVec = toHex(vec3(c.x,c.y,c.z));
 		this(hexVec.x, hexVec.y, hexVec.z);
 	}
+
+	this(VectorBlock c)
+	{
+		x = c.x;
+		y = c.y;
+		z = c.z;
+	}
 }
 
 struct VectorBlock
@@ -165,9 +193,7 @@ struct VectorBlock
 
 	this(VectorSquare c)
 	{
-		vec3 hexVec = toHex(vec3(c.x,c.y,c.z));
-
-		this(VectorHex(hexVec.x, hexVec.y, hexVec.z));
+		this(cast(VectorHex)c);
 	}
 
 	this(VectorChunk c)

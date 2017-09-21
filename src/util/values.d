@@ -16,13 +16,19 @@ immutable vec3 hex_dx = vec3(0.8660254,0,0.5);
 immutable vec3 hex_dy = vec3(0, 1, 0);
 immutable vec3 hex_dz = vec3(0,0,1);
 
-immutable vec3[] hex_dn = [
-	-hex_dx,
-	-hex_dz,
-	 hex_dx - hex_dz,
-	 hex_dx,
-	 hex_dz,
-	-hex_dx + hex_dz
+immutable vec_square square_dx = vec_square(0.8660254,0,0.5);
+immutable vec_square square_dy = vec_square(0, 1, 0);
+immutable vec_square square_dz = vec_square(0,0,1);
+
+immutable vec_square[] square_dn = [
+	-square_dx,
+	-square_dz,
+	 square_dx - square_dz,
+	 square_dx,
+	 square_dz,
+	-square_dx + square_dz,
+	 square_dy,
+	-square_dy
 ];
 
 immutable vec_block[] block_dn = [
