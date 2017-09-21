@@ -123,7 +123,7 @@ class Player : GameObject, IPhysical
 
 
 		vec_square playerHeight = vec_square(0, 1.75, 0);
-		int range = 175;
+		int range = 220;
 
 		if(InputStates.mouseLEFT == 1)
 		{
