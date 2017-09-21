@@ -37,7 +37,7 @@ class Player : GameObject, IPhysical
 	}
 
 	//TODO move sensitivity nonlocal
-	float sensitivity = 0.3f;
+	float sensitivity = 0.6f;
 
 	Transform lastTrans;
 
