@@ -232,6 +232,6 @@ class RenderMessage
 
 	public shared bool Ready()
 	{
-		return hasNewData || true;
+		return hasNewData;
 	}
 }
