@@ -8,6 +8,7 @@ import util.input;
 import logicalGameState;
 
 import IPhysical;
+import colliderCylinder;
 
 import renderObjectData;
 import util.mathM;
@@ -170,9 +171,9 @@ class Player : GameObject, IPhysical
 				* (PI / 180)) * quat.identity.rotatex(rotationY * (PI / 180));
     }
 
-	public double GetRadius()
+	public ColliderCylinder GetCollider()
 	{
-		return 0.1;
+		return new ColliderCylinder(transform.position, 0.1, 1.75);
 	}
 
 	mat4 cameraMatrix = mat4.identity();

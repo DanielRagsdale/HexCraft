@@ -18,7 +18,7 @@ void TickPhysics(ref Map map)
 	{
 		obj.transform.velocity += vec_square(0, -9.8, 0) * PHYSICS_DT;
 		
-		double radius = (cast(IPhysical)obj).GetRadius();
+		double radius = 0.15;
 		
 		vec_square[vec_block] collisions;
 

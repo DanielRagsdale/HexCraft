@@ -3,9 +3,14 @@ import std.stdio;
 import derelict.opengl3.gl;
 import gl3n.linalg;
 
-import map;
 import util.values;
 import util.coordVectors;
+
+import hexes;
+
+import map;
+
+
 
 immutable vec3[] hexVertices = [
 	// top
@@ -84,52 +89,52 @@ class MapModel
 			{
 			foreach (z; 0 .. 16)
 			{
-				int texNum = chunk[x][y][z];
-				if(!texNum)
+				int blockNum = chunk[x][y][z];
+				if(!blockNum)
 				{
 					continue;
 				}
 
-				//Top
-				if(!mWorldMap.getBlockRelative(c,x,y+1,z))
-				{
-					addTop(model, x, y, z, texNum);
-				}					
-				//Bottom
-				if(!mWorldMap.getBlockRelative(c,x,y-1,z))
-				{
-					addBottom(model, x, y, z, texNum);
-				}					
 				//Side 0
 				if(!mWorldMap.getBlockRelative(c,x-1,y,z))
 				{
-					addSide!0(model, x, y, z, texNum);
+					addSide!0(model, x, y, z, HexTypes[blockNum].GetTexture(0));
 				}
 				//Side 1
 				if(!mWorldMap.getBlockRelative(c,x,y,z-1))
 				{
-					addSide!1(model, x, y, z, texNum);
+					addSide!1(model, x, y, z, HexTypes[blockNum].GetTexture(1));
 				}
 				//Side 2
 				if(!mWorldMap.getBlockRelative(c,x+1,y,z-1))
 				{
-					addSide!2(model, x, y, z, texNum);
+					addSide!2(model, x, y, z, HexTypes[blockNum].GetTexture(2));
 				}
 				//Side 3
 				if(!mWorldMap.getBlockRelative(c,x+1,y,z))
 				{
-					addSide!3(model, x, y, z, texNum);
+					addSide!3(model, x, y, z, HexTypes[blockNum].GetTexture(3));
 				}
 				//Side 4
 				if(!mWorldMap.getBlockRelative(c,x,y,z+1))
 				{
-					addSide!4(model, x, y, z, texNum);
+					addSide!4(model, x, y, z, HexTypes[blockNum].GetTexture(4));
 				}
 				//Side 5
 				if(!mWorldMap.getBlockRelative(c,x-1,y,z+1))
 				{
-					addSide!5(model, x, y, z, texNum);
+					addSide!5(model, x, y, z, HexTypes[blockNum].GetTexture(5));
 				}
+				//Top
+				if(!mWorldMap.getBlockRelative(c,x,y+1,z))
+				{
+					addTop(model, x, y, z, HexTypes[blockNum].GetTexture(6));
+				}					
+				//Bottom
+				if(!mWorldMap.getBlockRelative(c,x,y-1,z))
+				{
+					addBottom(model, x, y, z, HexTypes[blockNum].GetTexture(7));
+				}					
 			}
 			}
 			}
@@ -145,6 +150,23 @@ class MapModel
 		return didSomething;
 	}
 	
+	void addSide(int side)(ref ChunkModel model, int x, int y, int z, int texNum)
+	{
+		int offset = cast(int)model.positions.length;
+
+		vec2 texOff = vec2((16*texNum)/512f, 0.0f);
+
+		foreach(i, j; [side+0,(side+1)%6,side+6,(side+1)%6+6])
+		{
+			vec3 temp = (hexVertices[j] + x*hex_dx + y*hex_dy + z*hex_dz);
+			model.positions ~= [temp.x, temp.y, temp.z];
+
+			model.texCoords ~= [(texPos[i] + texOff).x, (texPos[i] + texOff).y];
+		}
+
+		model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
+	}
+
 	void addTop(ref ChunkModel model, int x, int y, int z, int texNum)
 	{
 		int offset = cast(int)model.positions.length;
@@ -176,23 +198,6 @@ class MapModel
 
 		model.indices ~= [[offset+0,offset+1,offset+5],[offset+1,offset+4,offset+5],
 				[offset+1,offset+2,offset+4],[offset+2,offset+3,offset+4]];
-	}
-
-	void addSide(int side)(ref ChunkModel model, int x, int y, int z, int texNum)
-	{
-		int offset = cast(int)model.positions.length;
-
-		vec2 texOff = vec2((16*texNum)/512f, 0.0f);
-
-		foreach(i, j; [side+0,(side+1)%6,side+6,(side+1)%6+6])
-		{
-			vec3 temp = (hexVertices[j] + x*hex_dx + y*hex_dy + z*hex_dz);
-			model.positions ~= [temp.x, temp.y, temp.z];
-
-			model.texCoords ~= [(texPos[i] + texOff).x, (texPos[i] + texOff).y];
-		}
-
-		model.indices ~= [[offset+0,offset+1,offset+3],[offset+0,offset+3,offset+2]];
 	}
 }
 

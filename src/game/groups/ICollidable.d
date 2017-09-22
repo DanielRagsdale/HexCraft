@@ -1,9 +1,11 @@
 import gl3n.linalg;
 
+import colliderCylinder;
+
 /**
 * Collidable Object
 */
 interface ICollidable
 {
-	double GetRadius();
+	ColliderCylinder GetCollider();
 }
