@@ -5,6 +5,7 @@ import gl3n.linalg;
 import logicalGameState;
 import gameObject;
 import map;
+import hexes;
 
 import IPhysical;
 
@@ -29,7 +30,7 @@ void TickPhysics(ref Map map)
 			if(delta.y == 0)
 				blockCoords = cast(vec_block)(obj.transform.position + delta * radius + vec_square(0, 0.1, 0));
 			
-			if(map.getBlock(blockCoords))
+			if(HexTypes[map.getBlock(blockCoords)].IsSolidHex())
 			{
 				collisions[blockCoords] = delta;
 			}

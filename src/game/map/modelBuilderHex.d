@@ -11,7 +11,7 @@ import mapModel;
 import util.coordVectors;
 import util.values;
 
-immutable vec3[] hexVertices = [
+private immutable vec3[] hexVertices = [
 	// top
 	vec3(-0.57735027f, 1.0f,  0.0f),
 	vec3(-0.288675,    1.0f, -0.5f),
@@ -29,7 +29,7 @@ immutable vec3[] hexVertices = [
 	vec3(-0.288675,    0.0f,  0.5f)
 ];
 
-immutable vec2[] texPos = [
+private immutable vec2[] texPos = [
 	vec2(0.0f, 0.0f),
 	vec2(16f/512f, 0.0f),
 	vec2(0.0f, 32f/512f),
@@ -57,8 +57,6 @@ class ModelBuilderHex : ModelBuilder
 	public override void AppendModel(vec_chunk c, int x, int y, int z, ref ChunkModel model)
 	{
 		int blockNum = mWorldMap.getBlockRelative(c, x, y, z);
-
-		bool notSolid = !HexTypes[blockNum].IsSolidHex();
 
 		//Side 0
 		if(!mWorldMap.getBlockRelative(c,x-1,y,z) || !HexTypes[mWorldMap.getBlockRelative(c,x-1,y,z)].IsSolidHex())

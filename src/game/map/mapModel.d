@@ -10,6 +10,7 @@ import hexes;
 
 import modelBuilder;
 import modelBuilderHex;
+import modelBuilderCross;
 
 import map;
 
@@ -26,6 +27,7 @@ class MapModel
 	{
 		mWorldMap = worldMap;
 		ModelBuilders ~= new ModelBuilderHex(worldMap);
+		ModelBuilders ~= new ModelBuilderCross(worldMap);
 	}	
 	
 	ref ChunkModel getChunkModel(vec_chunk c)
@@ -66,7 +68,7 @@ class MapModel
 					continue;
 				}
 
-				ModelBuilders[0].AppendModel(c, x, y, z, model);
+				ModelBuilders[HexTypes[blockNum].GetRenderFunction()].AppendModel(c, x, y, z, model);
 
 			}
 			}
